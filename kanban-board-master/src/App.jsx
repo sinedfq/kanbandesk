@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
+import axios from 'axios'; // Импортируем axios
 import "./App.css";
 import Navbar from "../components/Navbar/Navbar";
 import Board from "../components/Board/Board";
-// import data from '../data'
 import { DragDropContext } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import Editable from "../components/Editable/Editable";
 import useLocalStorage from "use-local-storage";
 import "../bootstrap.css";
-function App() {
-  const [data, setData] = useState(
-    localStorage.getItem("kanban-board")
-      ? JSON.parse(localStorage.getItem("kanban-board"))
-      : []
-  );
 
+function App() {
+  const [data, setData] = useState([]);
   const defaultDark = window.matchMedia(
     "(prefers-colors-scheme: dark)"
   ).matches;
@@ -22,6 +18,17 @@ function App() {
     "theme",
     defaultDark ? "dark" : "light"
   );
+
+  useEffect(() => {
+    // Выполняем GET-запрос при монтировании компонента
+    axios.get('http://localhost:8000/api/boards/') // Замените на ваш URL
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+  }, []);
 
   const switchTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -51,18 +58,6 @@ function App() {
 
     return tempData;
   };
-
-  // const dragCardInSameBoard = (source, destination) => {
-  //   let tempData = Array.from(data);
-  //   console.log("Data", tempData);
-  //   const index = tempData.findIndex(
-  //     (item) => item.id.toString() === source.droppableId
-  //   );
-  //   console.log(tempData[index], index);
-  //   let [removedCard] = tempData[index].card.splice(source.index, 1);
-  //   tempData[index].card.splice(destination.index, 0, removedCard);
-  //   setData(tempData);
-  // };
 
   const addCard = (title, bid) => {
     const index = data.findIndex((item) => item.id === bid);

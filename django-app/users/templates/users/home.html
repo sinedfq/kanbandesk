@@ -1,0 +1,7 @@
+{% extends "users/base.html" %}
+{% block title %} Home Page {% endblock title %}
+{% block content %}
+    <!-- Включите содержимое вашего React-проекта прямо в шаблон -->
+    {% load static %}
+    <iframe src="{% static 'react/index.html' %}" width="100%" height="600px"></iframe>
+{% endblock content %}
