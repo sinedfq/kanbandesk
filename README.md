@@ -15,6 +15,10 @@
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/86a88fb9-c547-40d2-a2b7-6aaf1468e0b3)
 
+## Последнее обновление ##
+
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/e6a25a6b-94a9-4d46-9730-44733458b188)
+
 
 ### Последние обновления ###
 
