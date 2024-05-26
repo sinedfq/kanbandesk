@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 
-# Extending User Model Using a One-To-One Link
+# Модель профиля пользователя
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
@@ -12,7 +12,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    # resizing images
+    # Изменение размера изображений
     def save(self, *args, **kwargs):
         super().save()
 
@@ -22,3 +22,21 @@ class Profile(models.Model):
             new_img = (100, 100)
             img.thumbnail(new_img)
             img.save(self.avatar.path)
+
+# Модель доски (board)
+class Board(models.Model):
+    board_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.board_name
+
+# Модель карточки (card)
+class Card(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    index = models.IntegerField(unique=True)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, unique=True)
+
+    def __str__(self):
+        return self.title
