@@ -9,9 +9,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = '__all__'
-
+        fields = ['id', 'board_name']
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = '__all__'
+        fields = ['id', 'title', 'description', 'index']

@@ -1,29 +1,34 @@
 import { useEffect, useState } from "react";
-import axios from 'axios'; // Импортируем axios
+import axios from 'axios'; 
 import "./App.css";
 import Navbar from "../components/Navbar/Navbar";
 import Board from "../components/Board/Board";
 import { DragDropContext } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import Editable from "../components/Editable/Editable";
-import useLocalStorage from "use-local-storage";
 import "../bootstrap.css";
 
 function App() {
   const [data, setData] = useState([]);
-  const defaultDark = window.matchMedia(
-    "(prefers-colors-scheme: dark)"
-  ).matches;
-  const [theme, setTheme] = useLocalStorage(
-    "theme",
-    defaultDark ? "dark" : "light"
-  );
+  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [theme, setTheme] = useState(defaultDark ? "dark" : "light");
 
+  // Загружаем доски и карточки из API при монтировании компонента
   useEffect(() => {
-    // Выполняем GET-запрос при монтировании компонента
-    axios.get('http://localhost:8000/api/boards/') // Замените на ваш URL
+    axios.get('http://localhost:8000/api/boards/')
       .then(response => {
-        setData(response.data);
+        const boardsData = response.data;
+        const formattedData = boardsData.map(board => ({
+          id: board.id,
+          boardName: board.board_name,
+          card: (board.cards || []).map(card => ({
+            id: card.id,
+            title: card.title,
+            description: card.description,
+            index: card.index
+          }))
+        }));
+        setData(formattedData);
       })
       .catch(error => {
         console.error('There was an error!', error);
@@ -39,6 +44,8 @@ function App() {
     const tempData = [...data];
     tempData[index].boardName = title;
     setData(tempData);
+    axios.put(`http://localhost:8000/api/boards/${bid}/`, tempData[index])
+      .catch(error => console.error('There was an error!', error));
   };
 
   const dragCardInBoard = (source, destination) => {
@@ -62,13 +69,17 @@ function App() {
   const addCard = (title, bid) => {
     const index = data.findIndex((item) => item.id === bid);
     const tempData = [...data];
-    tempData[index].card.push({
+    const newCard = {
       id: uuidv4(),
       title: title,
       tags: [],
       task: [],
-    });
+      board: bid,
+    };
+    tempData[index].card.push(newCard);
     setData(tempData);
+    axios.post('http://localhost:8000/api/cards/', newCard)
+      .catch(error => console.error('There was an error!', error));
   };
 
   const removeCard = (boardId, cardId) => {
@@ -78,16 +89,23 @@ function App() {
 
     tempData[index].card.splice(cardIndex, 1);
     setData(tempData);
+    axios.delete(`http://localhost:8000/api/cards/${cardId}/`)
+      .catch(error => console.error('There was an error!', error));
   };
 
   const addBoard = (title) => {
-    const tempData = [...data];
-    tempData.push({
-      id: uuidv4(),
-      boardName: title,
-      card: [],
-    });
-    setData(tempData);
+    axios.post('http://localhost:8000/api/boards/', { board_name: title })
+      .then(response => {
+        const newBoard = {
+          id: response.data.id,
+          boardName: response.data.board_name,
+          card: []
+        };
+        setData(prevData => [...prevData, newBoard]);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
   };
 
   const removeBoard = (bid) => {
@@ -95,6 +113,8 @@ function App() {
     const index = data.findIndex((item) => item.id === bid);
     tempData.splice(index, 1);
     setData(tempData);
+    axios.delete(`http://localhost:8000/api/boards/${bid}/`)
+      .catch(error => console.error('There was an error!', error));
   };
 
   const onDragEnd = (result) => {
@@ -117,8 +137,9 @@ function App() {
     if (cardIndex < 0) return;
 
     tempBoards[index].card[cardIndex] = card;
-    console.log(tempBoards);
     setData(tempBoards);
+    axios.put(`http://localhost:8000/api/cards/${cid}/`, card)
+      .catch(error => console.error('There was an error!', error));
   };
 
   useEffect(() => {
@@ -137,11 +158,7 @@ function App() {
                 id={item.id}
                 name={item.boardName}
                 card={item.card}
-                setName={setName}
-                addCard={addCard}
-                removeCard={removeCard}
-                removeBoard={removeBoard}
-                updateCard={updateCard}
+                // Остальные props
               />
             ))}
             <Editable
@@ -149,7 +166,7 @@ function App() {
               name={"Add Board"}
               btnName={"Add Board"}
               onSubmit={addBoard}
-              placeholder={"Enter Board  Title"}
+              placeholder={"Enter Board Title"}
             />
           </div>
         </div>
