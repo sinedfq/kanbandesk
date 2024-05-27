@@ -34,9 +34,7 @@ class Board(models.Model):
 class Card(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    index = models.IntegerField(unique=True)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, unique=True)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

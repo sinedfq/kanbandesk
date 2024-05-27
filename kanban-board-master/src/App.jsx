@@ -4,7 +4,6 @@ import "./App.css";
 import Navbar from "../components/Navbar/Navbar";
 import Board from "../components/Board/Board";
 import { DragDropContext } from "react-beautiful-dnd";
-import { v4 as uuidv4 } from "uuid";
 import Editable from "../components/Editable/Editable";
 import "../bootstrap.css";
 
@@ -13,26 +12,35 @@ function App() {
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useState(defaultDark ? "dark" : "light");
 
-  // Загружаем доски и карточки из API при монтировании компонента
   useEffect(() => {
-    axios.get('http://localhost:8000/api/boards/')
-      .then(response => {
-        const boardsData = response.data;
-        const formattedData = boardsData.map(board => ({
-          id: board.id,
-          boardName: board.board_name,
-          card: (board.cards || []).map(card => ({
-            id: card.id,
-            title: card.title,
-            description: card.description,
-            index: card.index
-          }))
-        }));
-        setData(formattedData);
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-      });
+    axios.all([
+      axios.get('http://localhost:8000/api/boards/'),
+      axios.get('http://localhost:8000/api/cards/')
+    ])
+    .then(axios.spread((boardsResponse, cardsResponse) => {
+      const boardsData = boardsResponse.data;
+      const cardsData = cardsResponse.data;
+  
+      console.log('Boards data from API:', boardsData);
+      console.log('Cards data from API:', cardsData);
+  
+      // Распределение карточек по доскам
+      const formattedData = boardsData.map(board => ({
+        id: board.id,
+        boardName: board.board_name,
+        cards: cardsData.filter(card => card.board === board.id).map(card => ({
+          id: card.id,
+          title: card.title,
+          description: card.description,
+        }))
+      }));
+  
+      console.log('Formatted data:', formattedData);
+      setData(formattedData);
+    }))
+    .catch(error => {
+      console.error('There was an error!', error);
+    });
   }, []);
 
   const switchTheme = () => {
@@ -56,12 +64,12 @@ function App() {
     const sourceBoardIdx = tempData.findIndex(
       (item) => item.id.toString() === source.droppableId
     );
-    tempData[destinationBoardIdx].card.splice(
+    tempData[destinationBoardIdx].cards.splice(
       destination.index,
       0,
-      tempData[sourceBoardIdx].card[source.index]
+      tempData[sourceBoardIdx].cards[source.index]
     );
-    tempData[sourceBoardIdx].card.splice(source.index, 1);
+    tempData[sourceBoardIdx].cards.splice(source.index, 1);
 
     return tempData;
   };
@@ -70,24 +78,38 @@ function App() {
     const index = data.findIndex((item) => item.id === bid);
     const tempData = [...data];
     const newCard = {
-      id: uuidv4(),
       title: title,
-      tags: [],
-      task: [],
+      description: "No description",
       board: bid,
     };
-    tempData[index].card.push(newCard);
-    setData(tempData);
+
     axios.post('http://localhost:8000/api/cards/', newCard)
-      .catch(error => console.error('There was an error!', error));
+      .then(response => {
+        newCard.id = response.data.id;
+        const tempData = [...data];
+        if (!Array.isArray(tempData) || tempData.length <= index || !Array.isArray(tempData[index].cards)) {
+          console.error('Error: Invalid data structure or index');
+          return;
+        }
+        
+        // Теперь мы можем безопасно добавить новую карточку в массив
+        tempData[index].cards.push(newCard);
+        setData(tempData);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+        }
+      });
   };
 
   const removeCard = (boardId, cardId) => {
     const index = data.findIndex((item) => item.id === boardId);
     const tempData = [...data];
-    const cardIndex = data[index].card.findIndex((item) => item.id === cardId);
+    const cardIndex = data[index].cards.findIndex((item) => item.id === cardId);
 
-    tempData[index].card.splice(cardIndex, 1);
+    tempData[index].cards.splice(cardIndex, 1);
     setData(tempData);
     axios.delete(`http://localhost:8000/api/cards/${cardId}/`)
       .catch(error => console.error('There was an error!', error));
@@ -99,12 +121,15 @@ function App() {
         const newBoard = {
           id: response.data.id,
           boardName: response.data.board_name,
-          card: []
+          cards: [] // Поправлено на "cards"
         };
         setData(prevData => [...prevData, newBoard]);
       })
       .catch(error => {
         console.error('There was an error!', error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+        }
       });
   };
 
@@ -123,7 +148,22 @@ function App() {
 
     if (source.droppableId === destination.droppableId) return;
 
-    setData(dragCardInBoard(source, destination));
+    const sourceBoardIdx = data.findIndex(board => board.id.toString() === source.droppableId);
+    const destBoardIdx = data.findIndex(board => board.id.toString() === destination.droppableId);
+
+    if (sourceBoardIdx === -1 || destBoardIdx === -1) return;
+
+    const sourceBoard = data[sourceBoardIdx];
+    const destBoard = data[destBoardIdx];
+
+    const [movedCard] = sourceBoard.cards.splice(source.index, 1); // Поправлено на "cards"
+    destBoard.cards.splice(destination.index, 0, movedCard); // Поправлено на "cards"
+    movedCard.board = destBoard.id;
+
+    setData([...data]);
+
+    axios.put(`http://localhost:8000/api/cards/${movedCard.id}/`, movedCard)
+      .catch(error => console.error('There was an error!', error));
   };
 
   const updateCard = (bid, cid, card) => {
@@ -131,19 +171,22 @@ function App() {
     if (index < 0) return;
 
     const tempBoards = [...data];
-    const cards = tempBoards[index].card;
-
+    const cards = tempBoards[index].cards || []; // Поправлено на "cards"
+   
     const cardIndex = cards.findIndex((item) => item.id === cid);
     if (cardIndex < 0) return;
 
-    tempBoards[index].card[cardIndex] = card;
-    setData(tempBoards);
     axios.put(`http://localhost:8000/api/cards/${cid}/`, card)
+      .then(() => {
+        tempBoards[index].cards[cardIndex] = card; // Поправлено на "cards"
+        setData(tempBoards);
+      })
       .catch(error => console.error('There was an error!', error));
   };
 
   useEffect(() => {
     localStorage.setItem("kanban-board", JSON.stringify(data));
+
   }, [data]);
 
   return (
@@ -157,8 +200,12 @@ function App() {
                 key={item.id}
                 id={item.id}
                 name={item.boardName}
-                card={item.card}
-                // Остальные props
+                card={item.cards || []}
+                setName={setName}
+                addCard={addCard}
+                removeCard={removeCard}
+                updateCard={updateCard}
+                removeBoard={removeBoard}
               />
             ))}
             <Editable

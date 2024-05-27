@@ -46,34 +46,6 @@ const Card = (props) => {
                 }}
               />
             </div>
-
-            <div className="card__tags">
-              {props.tags?.map((item, index) => (
-                <Tag key={index} tagName={item.tagName} color={item.color} />
-              ))}
-            </div>
-
-            <div className="card__footer">
-              {/* <div className="time">
-                <Clock />
-                <span>Sun 12:30</span>
-              </div> */}
-              {props.card.task.length !== 0 && (
-                <div className="task">
-                  <CheckSquare />
-                  <span>
-                    {props.card.task.length !== 0
-                      ? `${
-                          (props.card.task?.filter(
-                            (item) => item.completed === true
-                          )).length
-                        } / ${props.card.task.length}`
-                      : `${"0/0"}`}
-                  </span>
-                </div>
-              )}
-            </div>
-
             {provided.placeholder}
           </div>
         </>

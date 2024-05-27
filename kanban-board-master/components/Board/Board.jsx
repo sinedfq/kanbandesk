@@ -43,7 +43,6 @@ export default function Board(props) {
               className="board__title"
             >
               {props?.name || "Name of Board"}
-              <span className="total__cards">{props.card?.length}</span>
             </p>
           </div>
         )}
@@ -82,7 +81,7 @@ export default function Board(props) {
                 tags={items.tags}
                 updateCard={props.updateCard}
                 removeCard={props.removeCard}
-                card={items}
+                cards={items}
               />
             ))}
             {provided.placeholder}
