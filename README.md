@@ -15,17 +15,22 @@
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/86a88fb9-c547-40d2-a2b7-6aaf1468e0b3)
 
+<div align = "center"> Внешний вид сайта (не конечный) </div>
+
 ## Последние обновления ##
 
 ### 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/e6a25a6b-94a9-4d46-9730-44733458b188)
-
+<div align = "center"> Добавление новый таблиц в базе данных для Board и Card </div>
 ###
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/58f1085b-6b30-4fad-820c-90df23bf5c4f)
 
+<div align = "center"> Добавление карточек на доску с записью в БД </div>
+
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/a00a1358-4fac-46ea-8a55-660ed210e142)
 
+<div align = "center"> Внутренний вид карточки из БД </div>
 
 
 
