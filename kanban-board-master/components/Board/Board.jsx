@@ -5,6 +5,7 @@ import { MoreHorizontal } from "react-feather";
 import Editable from "../Editable/Editable";
 import Dropdown from "../Dropdown/Dropdown";
 import { Droppable } from "react-beautiful-dnd";
+
 export default function Board(props) {
   const [show, setShow] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -71,17 +72,17 @@ export default function Board(props) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {props.card?.map((items, index) => (
+            {props.card?.map((card, index) => (
               <Card
                 bid={props.id}
-                id={items.id}
+                id={card.id}
                 index={index}
-                key={items.id}
-                title={items.title}
-                tags={items.tags}
+                key={card.id}
+                card={card} // Передаем данные карточки как props.card
                 updateCard={props.updateCard}
+                updateCardDate={props.updateCardDate}
+                updateCardEndDate={props.updateCardEndDate}
                 removeCard={props.removeCard}
-                cards={items}
               />
             ))}
             {provided.placeholder}

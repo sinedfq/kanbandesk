@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -35,6 +36,8 @@ class Card(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(null=True, blank=True)  # Новое поле
+    end_date = models.DateTimeField(null=True, blank=True)    # Новое поле
 
     def __str__(self):
         return self.title

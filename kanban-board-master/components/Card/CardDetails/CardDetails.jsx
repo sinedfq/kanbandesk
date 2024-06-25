@@ -1,125 +1,94 @@
 import React, { useState, useEffect } from "react";
-import {
-  Calendar,
-  Check,
-  CheckSquare,
-  Clock,
-  CreditCard,
-  List,
-  Plus,
-  Tag,
-  Trash,
-  Type,
-  X,
-} from "react-feather";
-import Editable from "../../Editable/Editable";
 import Modal from "../../Modal/Modal";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./CardDetails.css";
-import { v4 as uuidv4 } from "uuid";
-import Label from "../../Label/Label";
 
 export default function CardDetails(props) {
-  const colors = ["#61bd4f", "#f2d600", "#ff9f1a", "#eb5a46", "#c377e0"];
+  const {
+    card = { id: null, title: "", description: "", participants: [], start_date: null, end_date: null },
+    bid,
+    updateCard,
+    onClose,
+  } = props;
 
-  const [values, setValues] = useState({ ...props.card });
-  const [input, setInput] = useState(false);
-  const [text, setText] = useState(values.title);
-  const [labelShow, setLabelShow] = useState(false);
-  const Input = (props) => {
-    return (
-      <div className="">
-        <input
-          autoFocus
-          defaultValue={text}
-          type={"text"}
-          onChange={(e) => {
-            setText(e.target.value);
-          }}
-        />
-      </div>
-    );
-  };
+  const [title, setTitle] = useState(card.title || "");
+  const [description, setDescription] = useState(card.description || "");
+  const [participants, setParticipants] = useState(card.participants || []);
+  const [startDate, setStartDate] = useState(card.start_date ? new Date(card.start_date) : new Date());
+  const [endDate, setEndDate] = useState(card.end_date ? new Date(card.end_date) : new Date());
 
-  const updateTitle = (value) => {
-    setValues({ ...values, title: value });
-  };
-
-  const handelClickListner = (e) => {
-    if (e.code === "Enter") {
-      setInput(false);
-      updateTitle(text === "" ? values.title : text);
-    } else return;
-  };
-
+  // Добавим useEffect для отладки
   useEffect(() => {
-    document.addEventListener("keypress", handelClickListner);
-    return () => {
-      document.removeEventListener("keypress", handelClickListner);
+    console.log("Current card:", card);
+    console.log("Current description state:", description);
+  }, [card, description]);
+
+  const handleSave = () => {
+    const updatedCardData = {
+      ...card,
+      title,
+      description,
+      participants,
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+      board: bid,
     };
-  });
-  useEffect(() => {
-    if (props.updateCard) props.updateCard(props.bid, values.id, values);
-  }, [values]);
+
+    updateCard(bid, card.id, updatedCardData);
+    onClose();
+  };
 
   return (
-    <Modal onClose={props.onClose}>
-      <div className="local__bootstrap">
-        <div
-          className="container"
-          style={{ minWidth: "650px", position: "relative" }}
-        >
-          <div className="row pb-4">
-            <div className="col-12">
-              <div className="d-flex align-items-center pt-3 gap-2">
-                <CreditCard className="icon__md" />
-                {input ? (
-                  <Input title={values.title} />
-                ) : (
-                  <h5
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setInput(true)}
-                  >
-                    {values.title}
-                  </h5>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-8">
-              <h6 className="text-justify">Label</h6>
-              <div
-                className="d-flex label__color flex-wrap"
-                style={{ width: "500px", paddingRight: "10px" }}
-              >
-              </div>
-            </div>
-            <div className="col-4">
-              <h6>Add to card</h6>
-              <div className="d-flex card__action__btn flex-column gap-2">
-                <button onClick={() => setLabelShow(true)}>
-                  <span className="icon__sm">
-                    <Tag />
-                  </span>
-                  Add Label
-                </button>
-                <button>
-                  <span className="icon__sm">
-                    <Clock />
-                  </span>
-                  Date
-                </button>
-
-                <button onClick={() => props.removeCard(props.bid, values.id)}>
-                  <span className="icon__sm">
-                    <Trash />
-                  </span>
-                  Delete Card
-                </button>
-              </div>
-            </div>
+    <Modal onClose={onClose}>
+      <div className="cardDetails">
+        <h2>Редактирование</h2>
+        <input
+          type="text"
+          placeholder="Заголовок"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <textarea
+          placeholder="Описание"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        ></textarea>
+        <div className="participants-dropdown">
+          <select
+            multiple
+            value={participants}
+            onChange={(e) =>
+              setParticipants([...e.target.selectedOptions].map(option => option.value))
+            }
+          >
+            <option value="participant1">Пользователь 1</option>
+            <option value="participant2">Пользователь 2</option>
+            <option value="participant3">Пользователь 3</option>
+          </select>
+        </div>
+        <div className="date-picker">
+          <label>Дата начала и дата окончания:</label>
+          <div className="date-picker-container">
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              dateFormat="yyyy-MM-dd"
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              dateFormat="yyyy-MM-dd"
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+            />
           </div>
         </div>
+        <button onClick={handleSave}>Сохранить</button>
       </div>
     </Modal>
   );

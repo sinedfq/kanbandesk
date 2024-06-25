@@ -9,6 +9,7 @@
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/86a88fb9-c547-40d2-a2b7-6aaf1468e0b3)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 <div align = "center"> #1 Внешний вид сайта (не конечный) </div>
 
@@ -37,3 +38,5 @@
 #3 - Добавлена запись и удаление доски в базу данных <br>
 #4 - Добавлена новая ветка first <br>
 #5 - Добавлено создание, отображение и запись новых карточек <br>
+=======
+>>>>>>> Stashed changes
