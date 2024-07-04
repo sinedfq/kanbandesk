@@ -1,14 +1,38 @@
 {% extends "users/base.html" %}
 {% block title %} Register Page {% endblock title%}
 {% block content %}
-    <div class="form-content my-3 p-3">
+    <div class="form-content my-3 p-3" style="transform: translate(-300px, 60px);">
 		<div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-7">
-                    <div class="card shadow-lg border-0 rounded-lg mt-0 mb-5">
-                        <div class="card-header justify-content-center">
-                        	<h3 class="font-weight-light my-4 text-center">Create Account</h3>
+                    <div class="card " style="background: none; border: none;">
+                        <div class="card-header justify-content-center tab" style="background: none; border: none; display: flex; justify-content: center; align-items: center;">
+                            <h3 class="font-weight-light my-1 leftstr" style="position: relative; padding-bottom: 5px; margin-right: 20px; font-size: 40px;color:rgba(102, 102, 102, 1);">
+                                <a href="{% url 'login' %} " class="rightstr" style="text-decoration: none; color: inherit;">
+                                     Вход
+                                     <span style="position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(102, 102, 102, 1); transition: none;"></span>
+                                </a>
+                            </h3>
+                            <h3 class="font-weight-light my-1" style="position: relative; padding-bottom: 5px; margin-left: 40px; font-size: 40px; color: rgba(153, 153, 153, 1);">
+                                    Регистрация
+                                    <span style="position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(153, 153, 153, 1); transition: none;"></span>
+                                </a>
+                            </h3>
+                            <script>
+                                const link = document.querySelector('.rightstr');
+                            
+                                link.addEventListener('mouseover', function() {
+                                    this.style.color = 'rgba(153, 153, 153, 1)';
+                                    this.querySelector('span').style.background = 'rgba(153, 153, 153, 1)';
+                                });
+                            
+                                link.addEventListener('mouseout', function() {
+                                    this.style.color = 'rgba(102, 102, 102, 1)';
+                                    this.querySelector('span').style.background = 'rgba(102, 102, 102, 1)';
+                                });
+                            </script>
                         </div>
+
                         <div class="card-body">
                             <form method="POST">
                                 {% csrf_token %}
@@ -27,13 +51,11 @@
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="small mb-1">First Name</label>
                                             {{ form.first_name }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="small mb-1">Last Name</label>
                                             {{ form.last_name }}
                                         </div>
                                     </div>
@@ -41,21 +63,18 @@
                                 <div class="form-row">
                                     <div class="col-md-6">
 		                                <div class="form-group">
-		                                	<label class="small mb-1">Username</label>
-		                                    {{ form.username }}
+		                                	{{ form.username }}
 		                                </div>
 		                            </div>
                                     <div class="col-md-6">
 		                                <div class="form-group">
-		                                	<label class="small mb-1">Email</label>
-		                                    {{ form.email }}
+                                            {{ form.email }}
 		                                </div>
 		                            </div>
 		                        </div>
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="small mb-1">Password</label>
                                             {{ form.password1 }}
                                             {{ form.errors.password }}
                                         </div>
@@ -63,21 +82,16 @@
                                     <div class="col-md-6">
 
                                         <div class="form-group">
-                                            <label class="small mb-1">Confirm Password</label>
                                             {{ form.password2 }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group mt-4 mb-0">
-                                    <button type="submit" class="col-md-12 btn btn-dark">Sign Up</button><br><br>
+                                    <button type="submit" class="col-md-12 btn btn-white">Зарегистрироваться</button><br><br>
                                 </div>
                             </form>
                         </div>
-                        <div class="card-footer text-center">
-                            <div class="small">
-                                <a href="{% url 'login' %}">Have an account? Go to Sign in</a>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
