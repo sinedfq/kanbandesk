@@ -10,14 +10,13 @@
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/ac0a426a-da3d-40d7-a262-b47d891ab5c2)
 
 <div align = "center"> #1 Внешний вид сайта </div>
+<br>
+<H2 align = "center">Обновления</H2>
+<br>
 
-## Последние обновления ##
-
-### 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/e6a25a6b-94a9-4d46-9730-44733458b188)
 <div align = "center"> #2 Добавление новый таблиц в базе данных для Board и Card </div>
 
-###
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/58f1085b-6b30-4fad-820c-90df23bf5c4f)
 
@@ -46,8 +45,10 @@
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/2762124f-5e8f-45a3-a24b-f94ae76d1f2b)
 
 <div align = "center"> #11 Обновленный дизайн регистрации </div>
-
-### Обновления
+<br>
+======================================================================================
+<br>
+<br>
 1 - В проект Django были добавление статические файлы проекта JS React <br>
 2 - Обновлено создание базы данных <br>
 3 - Добавлена запись и удаление доски в базу данных <br>
