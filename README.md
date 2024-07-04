@@ -7,10 +7,9 @@
 
 ## Внешний вид запущенного проекта ##
 
-![image](https://github.com/sinedfq/kanbandesk/assets/99001435/86a88fb9-c547-40d2-a2b7-6aaf1468e0b3)
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/ac0a426a-da3d-40d7-a262-b47d891ab5c2)
 
-
-<div align = "center"> #1 Внешний вид сайта (не конечный) </div>
+<div align = "center"> #1 Внешний вид сайта </div>
 
 ## Последние обновления ##
 
@@ -40,6 +39,13 @@
 
 <div align = "center"> #10 Отображение карточки в базе данных </div>
 
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/6966ccd4-d7c0-4b6e-bf8f-971308eecfe4)
+
+<div align = "center"> #11 Обновленный дизайн авторизации </div>
+
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/2762124f-5e8f-45a3-a24b-f94ae76d1f2b)
+
+<div align = "center"> #11 Обновленный дизайн регистрации </div>
 
 ### Обновления
 1 - В проект Django были добавление статические файлы проекта JS React <br>
@@ -50,5 +56,6 @@
 6 - Добавлено редактирование имени карточек и даты начала и окончания, описания <br>
 7 - Обновлен внешний вид карточки на доске
 8 - Данные с сайта записываются в базу данных
+11 - Обновлен внешний вид меню авторизации, меню регистрации
 
 
