@@ -27,6 +27,10 @@
 
 <div align = "center"> #4 Внешний вид обновленной карточки на доске </div>
 
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/8bab4e80-cb90-4d1a-acbc-11b55fee1b92)
+
+<div align = "center"> #4.1 Отказ в доступе редактирования если пользователь неавторизован </div>
+
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/3ca14d31-8485-4d43-9d8c-c88797162961)
 
 <div align = "center"> #5 Отображение карточки в базе данных </div>
