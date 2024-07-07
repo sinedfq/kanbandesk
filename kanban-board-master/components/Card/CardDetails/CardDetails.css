@@ -88,3 +88,88 @@
 .strike-through {
   text-decoration: line-through;
 }
+
+.cardDetails {
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  width: 35rem;
+  height: 37rem;
+}
+
+.card__edit{
+  letter-spacing: 0.5rem;
+  font-weight: 200;
+  text-align: center;
+}
+
+.cardDetails input,
+.cardDetails textarea {
+  width: 90%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+.cardDetails input {
+  height: 40px;
+}
+
+.cardDetails textarea {
+  height: 100px;
+}
+
+.cardDetails__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8rem;
+}
+
+.save__button{
+  letter-spacing: 0.65rem;
+  background-color: #3a3a3a;
+  border: none;
+  color: white;
+  font-weight: 100;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.delete__button{
+  letter-spacing: 0.65rem;
+  background-color: #3a3a3a;
+  border: none;
+  color: white;
+  font-weight: 100;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.participants-dropdown {
+  width: 524px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.participants-dropdown select {
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+}
+
+.date-picker label{
+  margin-left: 20px;
+}
+
+.date-picker-container{
+  height: 30px;
+  width: 100%;
+}

@@ -13,22 +13,22 @@
 
     <title>{% block title %} {% endblock %} </title>
 </head>
-<body style="background-color: #3e3f43;">
+<body style="background-color: #3e3f43; width: 100%; max-width: 100%; overflow-x: hidden;">
   <!-- Фоновое изображение -->
-  <svg width="806" height="700" viewBox="0 0 806 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
+  <svg width="806" height="765" viewBox="0 0 806 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
     <path d="M1744 572C1744 1053.59 1353.59 1444 872 1444C390.408 1444 0 1053.59 0 572C0 90.4077 390.408 -300 872 -300C1353.59 -300 1744 90.4077 1744 572Z" fill="#8E8E8E"/>
   </svg>
-  <svg width="575" height="700" viewBox="0 0 575 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
+  <svg width="575" height="765" viewBox="0 0 575 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
     <path d="M1282 572C1282 926.015 995.015 1213 641 1213C286.985 1213 0 926.015 0 572C0 217.985 286.985 -69 641 -69C995.015 -69 1282 217.985 1282 572Z" fill="#7D7D7D"/>
   </svg>
-  <svg width="339" height="700" viewBox="0 0 339 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
+  <svg width="339" height="765" viewBox="0 0 339 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; right: 0; top: 0;">
     <path d="M1156 572C1156 891.221 897.221 1150 578 1150C258.779 1150 0 891.221 0 572C0 252.779 258.779 -6 578 -6C897.221 -6 1156 252.779 1156 572Z" fill="#666666"/>
     </svg>
   <div class="container p-3 my-3">
     <div class="row">
       <div class="col-md-12">
         <nav class="navbar navbar-expand-md navbar-light " style="background:none;">
-          <a href="/" class="navbar-brand" style="border-bottom: 1px solid white; font-size: 25px; color:white;">
+          <a href="/" class="navbar-brand" style="border-bottom: 1px solid white; font-size: 25px; color:white; position: relative; right: 6.5em;">
             Домой
           </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -37,10 +37,10 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ml-auto">
                   {% if user.is_authenticated %}
-                    <a href="{% url 'users-profile' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white;">Профиль</a>
-                    <a href="{% url 'logout' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white;">Выйти</a>
+                    <a href="{% url 'users-profile' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white; position: relative; left: 6em;">Профиль</a>
+                    <a href="{% url 'logout' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white; position: relative; left: 7em;">Выйти</a>
                   {% else %}
-                    <a href="{% url 'login' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white;">Войти</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link" style="border-bottom: 1px solid white;font-size: 25px; color:white; position: relative; left: 7em;">Войти</a>
                   {% endif %}
 
                 </div>

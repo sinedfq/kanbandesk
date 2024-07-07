@@ -22,6 +22,7 @@ const Card = (props) => {
           {modalShow && (
             <CardDetails
               updateCard={props.updateCard}
+              removeCard={props.removeCard}
               onClose={() => setModalShow(false)}
               card={props.card}
               bid={props.bid}

@@ -8,7 +8,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField()
-    cards_id = models.IntegerField(default=0)  # Добавлено значение по умолчанию
 
     def __str__(self):
         return self.user.username
@@ -38,6 +37,7 @@ class Card(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)  # Новое поле
     end_date = models.DateTimeField(null=True, blank=True)    # Новое поле
+    participants = models.ManyToManyField(User, related_name='cards')
 
     def __str__(self):
         return self.title

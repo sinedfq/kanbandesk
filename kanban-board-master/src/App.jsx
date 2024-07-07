@@ -34,6 +34,7 @@ function App() {
             description: card.description,
             start_date: card.start_date, // Добавляем проверку на существование
             end_date: card.end_date,     // Добавляем проверку на существование
+            participants: card.participants.map(participant => participant.username),
           })),
       }));
 
@@ -53,7 +54,7 @@ function App() {
     const tempData = [...data];
     tempData[index].boardName = title;
     setData(tempData);
-    axios.put(`http://localhost:8000/api/boards/${bid}/`, tempData[index])
+    axios.put(`http://localhost:8000/api/boards/${bid}/`, { board_name: title })
       .catch(error => console.error('There was an error!', error));
   };
 
@@ -298,7 +299,8 @@ function App() {
                   card={item.cards.map(card => ({
                     ...card,
                     start_date: card.start_date || null,
-                    end_date: card.end_date || null
+                    end_date: card.end_date || null,
+                    participants: card.participants || []
                   }))}
                   setName={setName}
                   addCard={addCard}

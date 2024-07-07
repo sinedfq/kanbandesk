@@ -6,8 +6,17 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets
-from .models import Board, Card
-from .serializers import BoardSerializer, CardSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+from django.contrib.auth.models import User
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Board, Card, Profile
+from .serializers import BoardSerializer, CardSerializer, ProfileSerializer, UserSerializer
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 
 
@@ -98,9 +107,52 @@ def profile(request):
 
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
+
+from rest_framework.exceptions import ValidationError
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
+
+    @method_decorator(csrf_exempt)  # Если необходимо отключить проверку CSRF токена
+    def update(self, request, *args, **kwargs):
+        # Выводим данные, которые пришли в запросе
+        print("Request data:", request.data)
+
+        # Извлекаем данные участников
+        participants_usernames = request.data.get('participants', [])
+
+        # Получаем id пользователей по username
+        participants = User.objects.filter(username__in=participants_usernames)
+        if participants.count() != len(participants_usernames):
+            missing_users = set(participants_usernames) - set(participants.values_list('username', flat=True))
+            raise ValidationError(f"Users not found: {', '.join(missing_users)}")
+
+        # Преобразуем список участников в список их ID
+        participants_ids = list(participants.values_list('id', flat=True))
+
+        # Получаем объект карточки для обновления
+        instance = self.get_object()
+
+        # Обновляем поле participants у объекта карточки только идентификаторами пользователей
+        instance.participants.clear()  # Очищаем существующих участников
+        instance.participants.add(*participants_ids)  # Добавляем новых участников
+
+        # Сохраняем изменения в объекте карточки
+        instance.save()
+
+        # Выводим обновленные данные карточки
+        serializer = self.get_serializer(instance)
+        print("Updated card data:", serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+@login_required
+def check_auth(request):
+    return JsonResponse({'isAuthenticated': True})
