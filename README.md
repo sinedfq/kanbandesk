@@ -7,10 +7,9 @@
 
 ## Внешний вид запущенного проекта ##
 
-![image](https://github.com/sinedfq/kanbandesk/assets/99001435/86a88fb9-c547-40d2-a2b7-6aaf1468e0b3)
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/291e25fd-240c-4b3f-ae83-a36fe40491a0)
 
-
-<div align = "center"> #1 Внешний вид сайта (не конечный) </div>
+<div align = "center"> #1 Внешний вид сайта</div>
 
 ## Последние обновления ##
 
@@ -20,17 +19,9 @@
 
 ###
 
-![image](https://github.com/sinedfq/kanbandesk/assets/99001435/58f1085b-6b30-4fad-820c-90df23bf5c4f)
-
-<div align = "center"> #5 Добавление карточек на доску с записью в БД </div>
-
-![image](https://github.com/sinedfq/kanbandesk/assets/99001435/a00a1358-4fac-46ea-8a55-660ed210e142)
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/5fb3539d-a97d-4086-bcea-9bc5c3c36b6e)
 
 <div align = "center"> #5 Внутренний вид карточки из БД </div>
-
-![image](https://github.com/sinedfq/kanbandesk/assets/99001435/38624102-649a-4310-b081-e8895f0ac0b1)
-
-<div align = "center"> #6 Меню редактирования карточки </div>
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/51b14f38-03d5-43c1-8fca-f9a7814c6c32)
 
@@ -48,7 +39,8 @@
 4 - Добавлена новая ветка first <br>
 5 - Добавлено создание, отображение и запись новых карточек <br>
 6 - Добавлено редактирование имени карточек и даты начала и окончания, описания <br>
-7 - Обновлен внешний вид карточки на доске
-8 - Данные с сайта записываются в базу данных
+7 - Обновлен внешний вид карточки на доске <br>
+8 - Данные с сайта записываются в базу данных <br>
+9 - Добавлены участники карточки, их запись в базу данных и вывод из базы данных при заходе на страницу
 
 
