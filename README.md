@@ -21,16 +21,19 @@
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/5fb3539d-a97d-4086-bcea-9bc5c3c36b6e)
 
-<div align = "center"> #5 Внутренний вид карточки из БД </div>
+<div align = "center"> #3 Внутренний вид карточки из БД </div>
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/51b14f38-03d5-43c1-8fca-f9a7814c6c32)
 
-<div align = "center"> #7 Внешний вид обновленной карточки на доске </div>
+<div align = "center"> #4 Внешний вид обновленной карточки на доске </div>
 
 ![image](https://github.com/sinedfq/kanbandesk/assets/99001435/3ca14d31-8485-4d43-9d8c-c88797162961)
 
-<div align = "center"> #10 Отображение карточки в базе данных </div>
+<div align = "center"> #5 Отображение карточки в базе данных </div>
 
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/62433a05-c539-4a61-8262-9122d6e5f760)
+
+<div align = "center"> #6 Отображение участников в базе данных </div>
 
 ### Обновления
 1 - В проект Django были добавление статические файлы проекта JS React <br>
