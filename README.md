@@ -39,6 +39,10 @@
 
 <div align = "center"> #6 Отображение участников в базе данных </div>
 
+![image](https://github.com/sinedfq/kanbandesk/assets/99001435/61c6e245-8ab5-4130-b498-822420a4ddbd)
+
+<div align = "center"> #7 Дизайн профиля </div>
+
 ### Обновления
 1 - В проект Django были добавление статические файлы проекта JS React <br>
 2 - Обновлено создание базы данных <br>
