@@ -10,9 +10,6 @@
   opacity: 0;
   position: absolute;
 }
-.dark {
-  background-color: #292c35;
-}
 .label {
   width: 36px;
   height: 11px !important;

@@ -24,10 +24,10 @@ body {
   padding-inline: 2rem;
   color: var(--text-color);
 }
-/* p {
+p {
   font-size: 16px;
   line-height: 28px;
-} */
+}
 
 ::-webkit-scrollbar {
   width: 5px;

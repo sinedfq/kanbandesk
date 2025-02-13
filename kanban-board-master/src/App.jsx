@@ -11,8 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [data, setData] = useState([]);
-  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const [theme, setTheme] = useLocalStorage("theme", defaultDark ? "dark" : "light");
+  const defaultLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+  const [theme, setTheme] = useLocalStorage("theme", defaultLight ? "light" : "light");
 
   useEffect(() => {
     axios.all([
@@ -46,7 +46,7 @@ function App() {
   }, []);
 
   const switchTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    setTheme(theme === "light" ? "light" : "light");
   };
 
   const setName = (title, bid) => {
@@ -287,7 +287,7 @@ function App() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="App" data-theme={theme}>
+      <div className="App" data-theme={"light"}>
         <Navbar switchTheme={switchTheme} />
         <div className="app_outer">
           <div className="app_boards">

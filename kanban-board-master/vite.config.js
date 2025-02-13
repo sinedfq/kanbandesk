@@ -1,7 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()]
-})
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: "assets/js/main.js",
+        chunkFileNames: "assets/js/[name].js",
+        assetFileNames: ({ name }) => {
+          if (name && name.endsWith(".css")) return "assets/css/main.css";
+          return "assets/[name].[ext]";
+        },
+      },
+    },
+  },
+});
