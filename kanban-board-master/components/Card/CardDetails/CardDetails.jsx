@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../Modal/Modal";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import CardEdit from "./CardEdit";
 import "./CardDetails.css";
+
 
 export default function CardDetails(props) {
   const {
@@ -13,77 +13,42 @@ export default function CardDetails(props) {
     onClose,
   } = props;
 
-  const [title, setTitle] = useState(card.title || "");
-  const [description, setDescription] = useState(card.description || "");
-  const [participants, setParticipants] = useState(card.participants || []);
-  const [startDate, setStartDate] = useState(card.start_date ? new Date(card.start_date) : new Date());
-  const [endDate, setEndDate] = useState(card.end_date ? new Date(card.end_date) : new Date());
-  const [users, setUsers] = useState([]);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showCardDetailsModal, setShowCardDetailsModal] = useState(false); 
+  const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    // Проверка авторизации пользователя
     fetch("/api/auth/check")
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok");
-      })
+      .then(response => response.json())
       .then(data => {
         setIsAuthorized(data.isAuthenticated);
-        if (data.isAuthenticated) {
-          setShowAuthModal(false);
-          setShowCardDetailsModal(true);
-        }
+        setShowCardDetailsModal(data.isAuthenticated);
       })
-      .catch(error => {
-        console.error("Error fetching auth status:", error);
-      });
-
-    // Получаем список пользователей с сервера
-    fetch("/api/users/")
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else if (response.status === 403) {
-          setShowAuthModal(true); 
-          return [];
-        }
-        throw new Error("Network response was not ok");
-      })
-      .then(data => setUsers(data))
-      .catch(error => {
-        console.error("Error fetching users:", error);
-      });
+      .catch(error => console.error("Error fetching auth status:", error));
   }, []);
-
-  const handleSave = () => {
-    const updatedCardData = {
-      ...card,
-      title,
-      description,
-      participants,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      board: bid,
-    };
-
-    updateCard(bid, card.id, updatedCardData);
-    onClose();
-  };
-
-  const handleDelete = () => {
-    console.log(`Removing card with ID: ${card.id} from board with ID: ${bid}`);
-    removeCard(bid, card.id);
-    onClose();
-  };
 
   const handleAuthModalClose = () => {
     setShowAuthModal(false);
     setShowCardDetailsModal(false);
+  };
+
+  const handleDelete = () => {
+    console.log(`Removing card with ID: ${card.id} from board with ID: ${bid}`);
+    console.log(typeof removeCard); // Проверка типа
+  
+    if (typeof removeCard === "function") {
+      removeCard(bid, card.id);
+    } else {
+      console.error("removeCard is not a function");
+    }
+  
+    // Закрываем все модальные окна
+    setShowCardDetailsModal(false);
+    setShowAuthModal(false);
+  
+    // Закрываем окно с карточкой
+    onClose();
   };
 
   return (
@@ -91,59 +56,26 @@ export default function CardDetails(props) {
       {isAuthorized && showCardDetailsModal && (
         <Modal onClose={onClose} isOpen={showCardDetailsModal}>
           <div className="cardDetails">
-            <h2 className="card__edit">Редактирование</h2>
-            <input
-              type="text"
-              placeholder="Заголовок"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <textarea
-              placeholder="Описание"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
-            <div className="participants-dropdown">
-              <select
-                multiple
-                value={participants}
-                onChange={(e) =>
-                  setParticipants([...e.target.selectedOptions].map(option => option.value))
-                }
-              >
-                {users.map(user => (
-                  <option key={user.id} value={user.user.username}>
-                    {user.user.username}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="date-picker">
-              <label>Дата начала и дата окончания:</label>
-              <div className="date-picker-container">
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  dateFormat="yyyy-MM-dd"
-                  selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  dateFormat="yyyy-MM-dd"
-                  selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-              </div>
-            </div>
-            <div className="cardDetails__buttons">
-              <button className="save__button" onClick={handleSave}>Сохранить</button>
-              <button className="delete__button" onClick={handleDelete}>Удалить</button>
-            </div>
+            <h2 className="card__view">Просмотр карточки</h2>
+            <p><strong>Заголовок:</strong> {card.title}</p>
+            <p><strong>Описание:</strong> {card.description}</p>
+            <p><strong>Участники:</strong> {card.participants.join(", ")}</p>
+            <p><strong>Дата начала:</strong> {card.start_date}</p>
+            <p><strong>Дата окончания:</strong> {card.end_date}</p>
+            <button className="navigate__button" onClick={() => setShowEditModal(true)}>Редактировать</button>
+            <button className="delete__button" onClick={handleDelete}>Удалить</button>
           </div>
+        </Modal>
+      )}
+
+      {showEditModal && (
+        <Modal onClose={() => setShowEditModal(false)} isOpen={showEditModal}>
+          <CardEdit 
+            card={card} 
+            onClose={() => setShowEditModal(false)} 
+            updateCard={updateCard} // Пробрасываем updateCard
+            bid={bid} // Пробрасываем ID доски
+          />
         </Modal>
       )}
 
@@ -151,7 +83,7 @@ export default function CardDetails(props) {
         <Modal onClose={handleAuthModalClose}>
           <div className="auth-modal">
             <h2>Пожалуйста, авторизуйтесь</h2>
-            <p>Вы должны быть авторизованы, чтобы редактировать карточки.</p>
+            <p>Вы должны быть авторизованы, чтобы просматривать карточки.</p>
             <button onClick={handleAuthModalClose}>Закрыть</button>
           </div>
         </Modal>

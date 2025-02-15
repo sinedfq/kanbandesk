@@ -24,18 +24,18 @@
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="small mb-1" style="font-size: 15px; color: white;">Имя пользователя:</label>
+                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Имя пользователя:</label>
                                 {{ user_form.username }}
-                                <label class="small mb-1" style="font-size: 15px; color: white;">Email:</label>
+                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Email:</label>
                                 {{ user_form.email }}
                             </div>
                             <div class="form-group">
                                 <a href="{% url 'password_change' %}">Смена пароля</a>
                                 <hr>
-                                <label class="small mb-1" style="font-size: 15px; color: white;">Смена аватарки:</label>
+                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Смена аватарки:</label>
                                 {{ profile_form.avatar }}
                             </div>
-                            <label class="small mb-1" style="font-size: 15px; color: white;">О себе:</label> {{ profile_form.bio}}
+                            <label class="small mb-1" style="font-size: 15px; color: #5e5e5e; overflow:auto;resize:none">О себе:</label> {{ profile_form.bio}}
                         </div>
                     </div>
                     <br><br>

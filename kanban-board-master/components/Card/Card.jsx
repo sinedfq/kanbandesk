@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { Calendar, CheckSquare, Edit3 } from "react-feather";
-import Dropdown from "../Dropdown/Dropdown";
-import Modal from "../Modal/Modal";
-import Tag from "../Tags/Tag";
-import "./Card.css";
+import { Calendar, Edit3 } from "react-feather";
 import CardDetails from "./CardDetails/CardDetails.jsx";
+import "./Card.css";
 
 const Card = (props) => {
   const [dropdown, setDropdown] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+
+  // Применяем цвет, если он задан, иначе устанавливаем дефолтный цвет
+  const cardColor = props.card.color ? props.card.color : "#ffffff"; // fallback
+  console.log("Цвет", cardColor)
 
   return (
     <Draggable
@@ -28,7 +29,6 @@ const Card = (props) => {
               bid={props.bid}
             />
           )}
-
           <div
             className="custom__card"
             onClick={() => {
@@ -37,7 +37,9 @@ const Card = (props) => {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
+            style={{ backgroundColor: `${cardColor}99` }}  // Добавляем opacity только к фону
           >
+
             <div className="card__text">
               <p>{props.card.title}</p>
               <Edit3

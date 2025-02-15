@@ -25,7 +25,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Card
-        fields = ['id', 'title', 'description', 'start_date', 'end_date', 'board', 'participants']
+        fields = ['id', 'title', 'description', 'start_date', 'end_date', 'board', 'participants', 'color']
         extra_kwargs = {
             'board': {'required': True},  # Убедитесь, что поле `board` является обязательным
         }

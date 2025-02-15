@@ -1,4 +1,6 @@
 # models.py
+from email.policy import default
+
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -38,6 +40,7 @@ class Card(models.Model):
     start_date = models.DateTimeField(null=True, blank=True)  # Новое поле
     end_date = models.DateTimeField(null=True, blank=True)    # Новое поле
     participants = models.ManyToManyField(User, related_name='cards')
+    color = models.CharField(max_length=50, default="#fff")
 
     def __str__(self):
         return self.title

@@ -11,42 +11,44 @@ import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [data, setData] = useState([]);
-  const defaultLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-  const [theme, setTheme] = useLocalStorage("theme", defaultLight ? "light" : "light");
+  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [theme, setTheme] = useLocalStorage("theme", defaultDark ? "dark" : "light");
 
-  useEffect(() => {
-    axios.all([
-      axios.get('http://localhost:8000/api/boards/'),
-      axios.get('http://localhost:8000/api/cards/')
-    ])
-    .then(axios.spread((boardsResponse, cardsResponse) => {
-      const boardsData = boardsResponse.data;
-      const cardsData = cardsResponse.data;
+useEffect(() => {
+  axios.all([
+    axios.get('http://localhost:8000/api/boards/'),
+    axios.get('http://localhost:8000/api/cards/')
+  ])
+  .then(axios.spread((boardsResponse, cardsResponse) => {
+    const boardsData = boardsResponse.data;
+    const cardsData = cardsResponse.data;
 
-      const formattedData = boardsData.map(board => ({
-        id: board.id,
-        boardName: board.board_name,
-        cards: cardsData
-          .filter(card => card.board === board.id)
-          .map(card => ({
-            id: card.id,
-            title: card.title,
-            description: card.description,
-            start_date: card.start_date, // Добавляем проверку на существование
-            end_date: card.end_date,     // Добавляем проверку на существование
-            participants: card.participants.map(participant => participant.username),
-          })),
-      }));
+    const formattedData = boardsData.map(board => ({
+      id: board.id,
+      boardName: board.board_name,
+      cards: cardsData
+        .filter(card => card.board === board.id)
+        .map(card => ({
+          id: card.id,
+          title: card.title,
+          description: card.description,
+          start_date: card.start_date || null,
+          end_date: card.end_date || null,
+          participants: card.participants.map(participant => participant.username),
+          color: card.color || "#ffffff", // Загружаем цвет карточки
+        })),
+    }));
 
-      setData(formattedData);
-    }))
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
-  }, []);
+    setData(formattedData);
+  }))
+  .catch(error => {
+    console.error('Ошибка загрузки данных!', error);
+  });
+}, []);
+
 
   const switchTheme = () => {
-    setTheme(theme === "light" ? "light" : "light");
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   const setName = (title, bid) => {

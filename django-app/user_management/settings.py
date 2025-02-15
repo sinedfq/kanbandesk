@@ -17,6 +17,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True  # Открывает доступ со всех доменов (для разработки)
+CORS_ALLOW_CREDENTIALS = True  # Разрешает отправку cookie (нужно для CSRF)
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000"]  # React URL
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -60,10 +68,11 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -157,7 +166,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "..", "kanban-board-master", "dist", "assets"),
     REACT_STATIC_DIR,
 ]
 

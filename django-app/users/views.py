@@ -126,8 +126,14 @@ class CardViewSet(viewsets.ModelViewSet):
         # Выводим данные, которые пришли в запросе
         print("Request data:", request.data)
 
-        # Извлекаем данные участников
+        # Извлекаем данные для обновления
         participants_usernames = request.data.get('participants', [])
+        title = request.data.get('title')
+        description = request.data.get('description')
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
+        board_id = request.data.get('board')
+        color = request.data.get('color')
 
         # Получаем id пользователей по username
         participants = User.objects.filter(username__in=participants_usernames)
@@ -141,7 +147,21 @@ class CardViewSet(viewsets.ModelViewSet):
         # Получаем объект карточки для обновления
         instance = self.get_object()
 
-        # Обновляем поле participants у объекта карточки только идентификаторами пользователей
+        # Обновляем все поля карточки
+        if title:
+            instance.title = title
+        if description:
+            instance.description = description
+        if start_date:
+            instance.start_date = start_date
+        if end_date:
+            instance.end_date = end_date
+        if board_id:
+            instance.board_id = board_id
+        if color:
+            instance.color = color
+
+        # Обновляем участников
         instance.participants.clear()  # Очищаем существующих участников
         instance.participants.add(*participants_ids)  # Добавляем новых участников
 
@@ -153,6 +173,7 @@ class CardViewSet(viewsets.ModelViewSet):
         print("Updated card data:", serializer.data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 @login_required
 def check_auth(request):
     return JsonResponse({'isAuthenticated': True})

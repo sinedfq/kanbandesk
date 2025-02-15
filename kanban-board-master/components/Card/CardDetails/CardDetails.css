@@ -1,6 +1,6 @@
 .card__action__btn > button {
   background-color: var(--task-hover);
-  color: var(--text-color);
+  color: #bdbdbd;
   border: none;
   font-size: 15px;
   border-radius: 3px;
@@ -25,6 +25,7 @@
   align-items: center;
   gap: 5px;
 }
+
 .card__action__btn > button:hover {
   background-color: var(--task-hover);
   border: none;
@@ -50,7 +51,7 @@
   display: block;
   border-radius: 3px;
   font-weight: 600;
-  color: #fff;
+  color: #c5d1db;
   line-height: 32px;
   float: left;
   margin: 0px 4px 4px 0px;
@@ -90,15 +91,16 @@
 }
 
 .cardDetails {
-  border-radius: 10px;
-  color: white;
+  border-radius: 40%;
+  color: #bdbdbd;
   display: flex;
   flex-direction: column;
-  width: 35rem;
-  height: 37rem;
+  width: 700px;
+  height: 370px;
 }
 
 .card__edit{
+  margin-top: 20px;
   letter-spacing: 0.5rem;
   font-weight: 200;
   text-align: center;
@@ -108,19 +110,23 @@
 .cardDetails textarea {
   width: 90%;
   margin-bottom: 20px;
+  margin-top: 20px;
   padding: 10px;
   border-radius: 5px;
-  border: none;
+  border-color: black;
   font-size: 16px;
   margin-left: 20px;
 }
 
 .cardDetails input {
+  margin-top: 20px;
   height: 40px;
 }
 
 .cardDetails textarea {
-  height: 100px;
+  padding-bottom: 50px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .cardDetails__buttons {
@@ -129,32 +135,104 @@
   margin-top: 8rem;
 }
 
+
 .save__button{
   letter-spacing: 0.65rem;
-  background-color: #3a3a3a;
+  background-color: #d5d5d5;
+  border-radius: 10px;
   border: none;
-  color: white;
+  color: #494949;
   font-weight: 100;
   font-size: 16px;
+  align-content: center;
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: 325px;
+  margin-top: 9px;
+  height: 30px;
+  width: 200px;
+}
+
+.modal__content{
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  border-radius: 10px;
 }
 
 .delete__button{
-  letter-spacing: 0.65rem;
-  background-color: #3a3a3a;
+  letter-spacing: 0.35rem;
+  margin-top: 10px;
   border: none;
-  color: white;
+  background-color: #a2a2a2b5;
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  color: #000000;
   font-weight: 100;
   font-size: 16px;
   cursor: pointer;
   margin-right: 8px;
+  width: 100px;
+}
+
+.navigate__button{
+  letter-spacing: 0.35rem;
+  background-color: #a1a1a1;
+  border: none;
+  outline: none;
+  color: rgb(0, 0, 0);
+  font-weight: 100;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  margin-right: 8px;
+  width: 200px;
+}
+
+.card__view{
+  padding-left: 125px;
+  padding-top: 20px;
+  color: #454545;
+}
+
+.cardDetails p{
+  margin-left: 20px;
+  color: #494949;
 }
 
 .participants-dropdown {
+  margin-top: 20px;
   width: 524px;
   margin-bottom: 20px;
   margin-left: 20px;
+}
+
+.color-picker{
+  margin-top: 20px;
+  display: flex;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  border: none;
+}
+
+
+.color-picker label{
+  margin-top: 10px;
+  margin-bottom: 0px;
+  margin-left: 5px;
+}
+
+.color-picker input {
+  border:none;
+  padding: 0;
+  border-radius: 50px;
+  background-color: #00000000;
+  width: 30px;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .participants-dropdown select {
@@ -165,11 +243,22 @@
   font-size: 16px;
 }
 
-.date-picker label{
-  margin-left: 20px;
+.date-picker{
+  margin-top: 0;
 }
 
-.date-picker-container{
-  height: 30px;
+.date-picker label{
+  margin-top: 0px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.date-picker-container {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
+}
+
+.date-picker-container .react-datepicker-wrapper {
+  flex: 1;
 }
