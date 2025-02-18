@@ -10,19 +10,21 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Board, Card, Profile
-from .serializers import BoardSerializer, CardSerializer, ProfileSerializer, UserSerializer
+from .models import Board, Card, Profile, Comment
+from .serializers import BoardSerializer, CardSerializer, ProfileSerializer, UserSerializer, CommentSerializer
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 
 
 def home(request):
     return render(request, 'users/home.html')
-
 
 class RegisterView(View):
     form_class = RegisterForm
@@ -174,6 +176,26 @@ class CardViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        card_id = self.request.query_params.get('card', None)
+        if card_id:
+            return Comment.objects.filter(card_id=card_id)
+        return Comment.objects.none()  # Возвращаем пустой набор данных, если нет card_id
+
+
 @login_required
 def check_auth(request):
     return JsonResponse({'isAuthenticated': True})
+
+def get_username(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    return JsonResponse({'username': user.username})

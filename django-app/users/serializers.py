@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Profile, Board, Card
+from .models import Profile, Board, Card, Comment
 from django.contrib.auth.models import User
 
 
@@ -29,3 +29,11 @@ class CardSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'board': {'required': True},  # Убедитесь, что поле `board` является обязательным
         }
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'card', 'user', 'comment', 'created_at']

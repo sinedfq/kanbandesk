@@ -44,3 +44,13 @@ class Card(models.Model):
 
     def __str__(self):
         return self.title
+
+# Модель комментариев к карточке
+class Comment(models.Model):
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Автор комментария
+    comment = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)  # Дата создания
+
+    def __str__(self):
+        return f"{self.user.username}: {self.comment[:20]}..."
