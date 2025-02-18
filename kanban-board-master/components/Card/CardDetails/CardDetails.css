@@ -121,18 +121,86 @@
 .cardDetails input {
   margin-top: 20px;
   height: 40px;
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
 }
 
 .cardDetails textarea {
   padding-bottom: 50px;
   margin-bottom: 0px;
   margin-top: 0px;
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
 }
 
 .cardDetails__buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 8rem;
+}
+
+/* CardDetails.css */
+.modal-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-details-wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.cardDetails {
+  flex: 1;
+}
+
+.comments-section {
+  flex: 0 0 300px; /* Комментарии будут занимать фиксированную ширину */
+  max-width: 300px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.comments-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.comment {
+  margin-bottom: 10px;
+  border-radius: 10px; /* Увеличена скругленность углов */
+  max-width: 260px;
+  border: 2px solid #8da8bd; /* Толщина и цвет обводки */
+  padding: 10px; /* Отступы внутри комментария для лучшего вида */
+  background-color: #ffffff; /* Белый фон для контраста */
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.comments-list {
+  max-width: 260px;
+  max-height: 190px; /* Максимальная высота, после которой будет прокрутка */
+  overflow-y: auto;  /* Включаем прокрутку, если контент выходит за пределы */
+  padding-right: 10px; /* Отступ для улучшения внешнего вида */
+}
+
+.comment-form input {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.comment-form button {
+  padding: 10px;
+  cursor: pointer;
 }
 
 
@@ -204,17 +272,20 @@
 
 .participants-dropdown {
   margin-top: 20px;
-  width: 524px;
+  width: 630px;
   margin-bottom: 20px;
   margin-left: 20px;
+  -webkit-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
 }
 
 .color-picker{
   margin-top: 20px;
   display: flex;
   background-color: rgb(255, 255, 255);
-  border-radius: 10px;
   border: none;
+  border-radius: 10px;
 }
 
 
@@ -227,10 +298,8 @@
 .color-picker input {
   border:none;
   padding: 0;
-  border-radius: 50px;
-  background-color: #00000000;
   width: 30px;
-  height: 30px;
+  height: 25px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -245,6 +314,7 @@
 
 .date-picker{
   margin-top: 0;
+  
 }
 
 .date-picker label{

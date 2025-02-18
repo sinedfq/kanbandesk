@@ -1,21 +1,15 @@
 {% extends "users/base.html" %}
 {% block title %}Logout{% endblock title %}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-4">
-        <div class="card" style="width: 18rem;">
-          <div class="card-body text-center">
-            <h5 class="card-title">Вы вышли из системы</h5>
-            <br><hr>
-            <a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #3e3f43;">Войдите в систему еще раз</a>
-          </div>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+        <h5 class="card-title">You have been logged out</h5>
+        <p class="card-text">
+            Thanks for your time, contact me for any comments or suggestions using my email address.
+        </p>
+        <br><hr><a href="{% url 'login' %}" class="btn btn-primary">Sign in again</a>
         </div>
-      </div>
     </div>
-  </div>
-  
-  
 
 
 {% endblock content %}
