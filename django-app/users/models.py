@@ -25,6 +25,9 @@ class Profile(models.Model):
             img.thumbnail(new_img)
             img.save(self.avatar.path)
 
+    def get_user_comments(self):
+        return Comment.objects.filter(user=self.user)
+
 # Модель доски (board)
 class Board(models.Model):
     board_name = models.CharField(max_length=100)

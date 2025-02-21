@@ -106,8 +106,16 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
+        user_cards = Card.objects.filter(participants=request.user)
 
-    return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+    user_comments = Comment.objects.filter(user=request.user)  # Получаем комментарии пользователя
+
+    return render(request, 'users/profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'user_comments': user_comments,
+        'user_cards': user_cards,
+    })
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Profile.objects.all()

@@ -1,0 +1,55 @@
+/* Основные стили для выдвижного блока с комментариями */
+#comments-section {
+    max-height: 0; /* Изначально блок скрыт */
+    overflow: hidden; /* Скроем лишний контент */
+    transition: max-height 0.5s ease-out; /* Плавная анимация по высоте */
+    padding: 0 20px; /* Отступы для красивого отображения */
+}
+
+/* Стиль для кнопки */
+#toggle-comments {
+    background-color: #007bff; /* Цвет фона кнопки */
+    color: white; /* Цвет текста */
+    border: none; /* Без границы */
+    border-radius: 4px; /* Закругленные углы */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 16px; /* Размер шрифта */
+    cursor: pointer; /* Курсор в виде руки */
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+#toggle-comments:hover {
+    background-color: #0056b3; /* Цвет фона при наведении */
+    transition: background-color 0.3s; /* Плавный переход при наведении */
+}
+
+/* Стили для элементов списка */
+.list-group-item {
+    border: none; /* Убираем границу у элементов списка */
+    background-color: #f8f9fa; /* Цвет фона элементов списка */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+.list-group-item-cards {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+}
+
+.list-group-item-cards:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.list-group-item:hover {
+    background-color: #e2e6ea; /* Цвет фона при наведении */
+}
+
+/* Дополнительные стили для списка */
+.list-group {
+    padding: 0;
+}
