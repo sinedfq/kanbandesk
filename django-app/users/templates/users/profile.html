@@ -3,28 +3,166 @@
 
 {% block title %}Profile Page{% endblock title %}
 
-{% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
-{% endblock extra_head %}
-
 {% block content %}
+
+<style>
+    /* Стили для комментариев в кружке */
+    .comment-count {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    /* Скрытие комментариев по умолчанию */
+    #comments-section {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out;
+        padding: 0 20px;
+    }
+
+    /* Линия с стрелочкой вниз */
+    #toggle-line {
+        cursor: pointer;
+        font-size: 24px;
+        color: #007bff;
+        margin-top: 10px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%; /* Линия будет растягиваться на всю ширину контейнера */
+        padding: 10px 0; /* Добавляем пространство для клика */
+    }
+
+    /* Горизонтальная линия */
+    #toggle-line::before {
+        content: '';
+        display: block;
+        width: 100%; /* Сделаем линию на всю ширину контейнера */
+        height: 2px;
+        background-color: #007bff;
+        margin-right: 10px; /* Отступ перед стрелочкой */
+    }
+
+    /* Стрелка вниз */
+    #toggle-line span {
+        font-size: 18px;
+    }
+
+    /* Стили для элементов списка */
+    .list-group-item {
+        border: none;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+    }
+
+    /* Стили для карточек */
+    .list-group-item-cards {
+        position: relative; /* Добавляем для возможности абсолютного позиционирования */
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        background-color: #ffffff;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s;
+        width: 500px; /* Увеличенная ширина карточек */
+        margin-right: 15px; /* Отступ между карточками */
+        min-height: 200px; /* Устанавливаем минимальную высоту */
+        max-height: 200px; /* Устанавливаем минимальную высоту */
+        min-width: 300px; /* Устанавливаем минимальную высоту */
+        max-width: 300px; /* Устанавливаем минимальную высоту */
+        word-wrap: break-word; /* Перенос длинных слов на следующую строку */
+        white-space: normal; /* Разрешаем перенос текста */
+    }
+
+    .list-group-item-cards:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .list-group-item:hover {
+        background-color: #e2e6ea;
+    }
+
+    .list-group {
+        padding: 0;
+    }
+
+    /* Карточки в горизонтальном списке (без обертки) */
+    .card-list-group {
+        display: flex;
+        overflow-x: auto; /* Горизонтальная прокрутка */
+        padding: 0;
+        -webkit-overflow-scrolling: touch; /* Плавная прокрутка на мобильных устройствах */
+        white-space: nowrap; /* Карточки не переходят на следующую строку */
+        overflow-y: hidden; /* Убираем вертикальную прокрутку */
+    }
+
+    /* Стили для модального окна */
+    .modal-dialog {
+        max-width: 700px; /* Устанавливаем максимальную ширину модального окна */
+    }
+
+    .modal-content {
+        max-height: 90vh; /* Ограничиваем максимальную высоту окна, чтобы оно не было слишком высоким */
+        overflow-y: auto; /* Прокрутка по вертикали, если контент превышает высоту */
+    }
+
+    .modal-body {
+        max-height: 70vh; /* Ограничиваем высоту тела модального окна */
+        overflow-y: auto; /* Включаем прокрутку для списка комментариев */
+        padding-right: 10px; /* Добавляем небольшой отступ для прокрутки */
+    }
+
+    /* Стили для комментариев */
+    .modal-body ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .modal-body .list-group-item strong {
+        margin-left: 0;  /* Убираем отступы слева */
+        display: inline; /* Убираем блоковое поведение, если оно есть */
+    }
+
+    .modal-body .list-group-item p {
+        white-space: normal; /* Разрешаем перенос текста */
+        word-wrap: break-word; /* Перенос длинных слов */
+        margin: 0; /* Убираем отступы для абзацев */
+    }
+</style>
+
+
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4 text-center">
-            <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}" style="cursor: pointer; width: 150px; height: 150px;" />
+            <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}"
+                 style="cursor: pointer; width: 150px; height: 150px;"/>
         </div>
         <div class="col-md-6">
             {% if user_form.errors %}
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <div id="form_errors">
-                        {% for key, value in user_form.errors.items %}
-                            <strong>{{ value }}</strong>
-                        {% endfor %}
-                    </div>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <div id="form_errors">
+                    {% for key, value in user_form.errors.items %}
+                    <strong>{{ value }}</strong>
+                    {% endfor %}
                 </div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             {% endif %}
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -56,39 +194,111 @@
     <!-- Раздел с комментариями -->
     <div class="container mt-4">
         <h4>Ваши комментарии:</h4>
-        {% if user_comments %}
+        <div id="toggle-line" onclick="toggleComments()"></div>
+        <div id="comments-section">
+            {% if user_comments %}
             <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
                 {% for comment in user_comments %}
-                    <li class="list-group-item">
-                        <strong>{{ comment.card.title }}:</strong> {{ comment.comment }} <br>
-                        <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
-                    </li>
+                <li class="list-group-item">
+                    <strong>Имя карточки {{ comment.card.title }} :</strong> <br> {{ comment.comment }} <br>
+                    <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
+                </li>
                 {% endfor %}
             </ul>
-        {% else %}
+            {% else %}
             <p>Вы еще не оставляли комментарии.</p>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
-
     <!-- Раздел с карточками -->
     <div class="container mt-4">
         <h4>Ваши карточки:</h4>
         {% if user_cards %}
-            <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
-                {% for card in user_cards %}
-                    <li class="list-group-item">
-                        <strong>Карточка: {{ card.title }}</strong> <br>
-                        <span class="text-muted">Доска: {{ card.board.board_name }}</span><br>
-                        <span class="text-muted">Описание: {{ card.description }}</span><br>
-                        <small class="text-muted">Дата начала: {{ card.start_date|date:"d M Y" }}</small><br>
-                        <small class="text-muted">Дата окончания: {{ card.end_date|date:"d M Y" }}</small>
-                    </li>
-                {% endfor %}
-            </ul>
+        <ul class="card-list-group">
+            {% for card in user_cards %}
+            <li class="list-group-item list-group-item-cards" data-toggle="modal" style="background-color: {{ card.color }};"
+                data-target="#commentModal{{ card.id }}" >
+                <strong>Карточка: {{ card.title }}</strong>
+                <span class="comment-count">{{ card.comments.count }}</span> <br>
+                <span class="text-muted">Доска: {{ card.board.board_name }}</span><br>
+                <span class="text-muted">Описание: {{ card.description }}</span><br>
+                <small class="text-muted">Дата начала: {{ card.start_date|date:"d M Y" }}</small><br>
+                <small class="text-muted">Дата окончания: {{ card.end_date|date:"d M Y" }}</small><br>
+            </li>
+
+            <!-- Модальное окно для комментариев -->
+            <div class="modal fade" id="commentModal{{ card.id }}" tabindex="-1" role="dialog"
+                 aria-labelledby="commentModalLabel{{ card.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="commentModalLabel{{ card.id }}">Комментарии к карточке {{ card.title }} </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                {% for comment in card.comments.all %}
+                                <li class="list-group-item">
+                                    <strong>{{ comment.user.username }}:</strong> <p> {{ comment.comment }} </p>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item">Нет комментариев для этой карточки.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </ul>
         {% else %}
-            <p>Вы еще не участвуете в карточках.</p>
+        <p>Вы еще не участвуете в карточках.</p>
         {% endif %}
     </div>
-
 </div>
+
+<script>
+    // Функция для преобразования hex цвета в rgba с альфа-каналом
+    function hexToRgba(hex, alpha = 0.3) {  // Прозрачность по умолчанию 30%
+        let r = parseInt(hex.substring(1, 3), 16);
+        let g = parseInt(hex.substring(3, 5), 16);
+        let b = parseInt(hex.substring(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    // Применяем к карточкам
+    document.querySelectorAll('.list-group-item-cards').forEach(function(card) {
+        // Считываем цвет фона из inline стилей (например, #ff8585)
+        let hexColor = card.style.backgroundColor;
+
+        // Если hexColor в формате rgb, извлекаем его компонентные значения
+        if (hexColor.startsWith('rgb')) {
+            let rgb = hexColor.match(/\d+/g);
+            let rgbaColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.3)`; // Прозрачность 30%
+            card.style.backgroundColor = rgbaColor;
+        } else if (hexColor.startsWith('#')) {
+            // Преобразуем hex-цвет в rgba с добавлением прозрачности
+            let rgbaColor = hexToRgba(hexColor, 0.3);  // Альфа = 0.3
+            card.style.backgroundColor = rgbaColor;
+        }
+    });
+    function toggleComments() {
+        var commentsSection = document.getElementById('comments-section');
+        var toggleLine = document.getElementById('toggle-line');
+        var arrowText = toggleLine.querySelector('span');
+
+        if (commentsSection.style.maxHeight === '0px' || commentsSection.style.maxHeight === '') {
+            commentsSection.style.maxHeight = commentsSection.scrollHeight + 'px';  // Раскрываем блок
+        } else {
+            commentsSection.style.maxHeight = '0';  // Скрываем блок
+        }
+    }
+</script>
+
 {% endblock content %}
