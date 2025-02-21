@@ -99,6 +99,18 @@
   height: 370px;
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .card__edit{
   margin-top: 20px;
   letter-spacing: 0.5rem;
@@ -139,6 +151,17 @@
   display: flex;
   justify-content: space-between;
   margin-top: 8rem;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* CardDetails.css */

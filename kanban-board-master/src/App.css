@@ -23,6 +23,8 @@ body {
   gap: 30px;
   padding-inline: 2rem;
   color: var(--text-color);
+  opacity: 0; /* Начальное состояние - скрыто */
+  animation: fadeIn 1s ease-out forwards; /* Применяем анимацию fadeIn */
 }
 p {
   font-size: 16px;
@@ -60,4 +62,13 @@ p {
 }
 .cardinfo__editable {
   width: fit-content;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

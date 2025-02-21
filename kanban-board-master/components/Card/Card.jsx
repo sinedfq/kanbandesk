@@ -10,7 +10,6 @@ const Card = (props) => {
 
   // Применяем цвет, если он задан, иначе устанавливаем дефолтный цвет
   const cardColor = props.card.color ? props.card.color : "#ffffff"; // fallback
-  console.log("Цвет", cardColor)
 
   return (
     <Draggable
@@ -18,57 +17,63 @@ const Card = (props) => {
       draggableId={props.id.toString()}
       index={props.index}
     >
-      {(provided) => (
-        <>
-          {modalShow && (
-            <CardDetails
-              updateCard={props.updateCard}
-              removeCard={props.removeCard}
-              onClose={() => setModalShow(false)}
-              card={props.card}
-              bid={props.bid}
-            />
-          )}
-          <div
-            className="custom__card"
-            onClick={() => {
-              setModalShow(true);
-            }}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            style={{ backgroundColor: `${cardColor}99` }}  // Добавляем opacity только к фону
-          >
+      {(provided, snapshot) => {
+        const isDragging = snapshot.isDragging;
 
-            <div className="card__text">
-              <p>{props.card.title}</p>
-              <Edit3
-                color="#000000"
-                className="car__more"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDropdown(true);
-                }}
+        return (
+          <>
+            {modalShow && (
+              <CardDetails
+                updateCard={props.updateCard}
+                removeCard={props.removeCard}
+                onClose={() => setModalShow(false)}
+                card={props.card}
+                bid={props.bid}
               />
-            </div>
-            <div className="card__footer">
-              {props.card?.end_date && (
-                <div className="time">
-                  <Calendar />
-                  <span>{new Date(props.card.end_date).toLocaleDateString()}</span>
-                </div>
-              )}
-              {props.card?.participants && (
-                <div className="participants">
-                  <span>{props.card.participants.join(", ")}</span>
-                </div>
-              )}
-            </div>
+            )}
+            <div
+              className={`custom__card ${isDragging ? 'dragging' : ''}`}
+              onClick={() => {
+                setModalShow(true);
+              }}
+              {...provided.draggableProps}           
+              {...provided.dragHandleProps}          
+              ref={provided.innerRef}               
+              style={{
+                backgroundColor: `${cardColor}99`,   // Фон по умолчанию
+                ...provided.draggableProps.style,    // Стили от react-beautiful-dnd
+              }}
+            >
+              <div className="card__text">
+                <p>{props.card.title}</p>
+                <Edit3
+                  color="#000000"
+                  className="car__more"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDropdown(true);
+                  }}
+                />
+              </div>
+              <div className="card__footer">
+                {props.card?.end_date && (
+                  <div className="time">
+                    <Calendar />
+                    <span>{new Date(props.card.end_date).toLocaleDateString()}</span>
+                  </div>
+                )}
+                {props.card?.participants && (
+                  <div className="participants">
+                    <span>{props.card.participants.join(", ")}</span>
+                  </div>
+                )}
+              </div>
 
-            {provided.placeholder}
-          </div>
-        </>
-      )}
+              {provided.placeholder}
+            </div>
+          </>
+        );
+      }}
     </Draggable>
   );
 };
