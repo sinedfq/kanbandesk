@@ -84,6 +84,9 @@
         max-width: 300px; /* Устанавливаем минимальную высоту */
         word-wrap: break-word; /* Перенос длинных слов на следующую строку */
         white-space: normal; /* Разрешаем перенос текста */
+        opacity: 0; /* Начальная прозрачность */
+        transform: translateY(20px); /* Начальное смещение */
+        animation: fadeInUp 0.8s forwards; /* Анимация */
     }
 
     .list-group-item-cards:hover {
@@ -141,19 +144,73 @@
         word-wrap: break-word; /* Перенос длинных слов */
         margin: 0; /* Убираем отступы для абзацев */
     }
-</style>
 
+    /* Стили для плавного появления */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    html {
+        scroll-behavior: smooth; /* Плавная прокрутка по умолчанию */
+    }
+
+    body {
+        scroll-behavior: smooth; /* Применяем ко всему документу */
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        transition: background 0.3s ease-in-out;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Стили для аватарки */
+    .account-img {
+        cursor: pointer;
+        width: 150px;
+        height: 150px;
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    .account-img.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+        @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4 text-center">
-            <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}"
-                 style="cursor: pointer; width: 150px; height: 150px;"/>
+            <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}"/>
         </div>
         <div class="col-md-6">
             {% if user_form.errors %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
+            <div class="alert alert-danger alert-dismissible fade-in" role="alert">
                 <div id="form_errors">
                     {% for key, value in user_form.errors.items %}
                     <strong>{{ value }}</strong>
@@ -168,99 +225,105 @@
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group fade-in">
                             <label class="small mb-1 text-muted">Имя пользователя:</label>
                             {{ user_form.username }}
+                        </div>
+                        <div class="form-group fade-in">
                             <label class="small mb-1 text-muted">Email:</label>
                             {{ user_form.email }}
                         </div>
-                        <div class="form-group">
+                        <div class="form-group fade-in">
                             <a href="{% url 'password_change' %}">Смена пароля</a>
                             <hr>
                             <label class="small mb-1 text-muted">Смена аватарки:</label>
                             {{ profile_form.avatar }}
                         </div>
-                        <label class="small mb-1 text-muted">О себе:</label>
-                        {{ profile_form.bio }}
+                        <label class="small mb-1 text-muted fade-in">О себе:</label>
+                        <div class="fade-in">
+                            {{ profile_form.bio }}
+                        </div>
                     </div>
                 </div>
                 <br><br>
-                <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
-                <button type="reset" class="btn btn-dark btn-lg">Сброс</button>
+                <button type="submit" class="btn btn-dark btn-lg fade-in">Сохранить изменения</button>
+                <button type="reset" class="btn btn-dark btn-lg fade-in">Сброс</button>
             </form>
         </div>
     </div>
+</div>
 
-    <!-- Раздел с комментариями -->
-    <div class="container mt-4">
-        <h4>Ваши комментарии:</h4>
-        <div id="toggle-line" onclick="toggleComments()"></div>
-        <div id="comments-section">
-            {% if user_comments %}
-            <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
-                {% for comment in user_comments %}
-                <li class="list-group-item">
-                    <strong>Имя карточки {{ comment.card.title }} :</strong> <br> {{ comment.comment }} <br>
-                    <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>Вы еще не оставляли комментарии.</p>
-            {% endif %}
-        </div>
-    </div>
-    <!-- Раздел с карточками -->
-    <div class="container mt-4">
-        <h4>Ваши карточки:</h4>
-        {% if user_cards %}
-        <ul class="card-list-group">
-            {% for card in user_cards %}
-            <li class="list-group-item list-group-item-cards" data-toggle="modal" style="background-color: {{ card.color }};"
-                data-target="#commentModal{{ card.id }}" >
-                <strong>Карточка: {{ card.title }}</strong>
-                <span class="comment-count">{{ card.comments.count }}</span> <br>
-                <span class="text-muted">Доска: {{ card.board.board_name }}</span><br>
-                <span class="text-muted">Описание: {{ card.description }}</span><br>
-                <small class="text-muted">Дата начала: {{ card.start_date|date:"d M Y" }}</small><br>
-                <small class="text-muted">Дата окончания: {{ card.end_date|date:"d M Y" }}</small><br>
+<div class="container mt-4">
+    <h4>Ваши комментарии:</h4>
+    <div id="toggle-line" onclick="toggleComments()"></div>
+    <div id="comments-section">
+        {% if user_comments %}
+        <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
+            {% for comment in user_comments %}
+            <li class="list-group-item">
+                <strong>Имя карточки {{ comment.card.title }} :</strong> <br> {{ comment.comment }} <br>
+                <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
             </li>
-
-            <!-- Модальное окно для комментариев -->
-            <div class="modal fade" id="commentModal{{ card.id }}" tabindex="-1" role="dialog"
-                 aria-labelledby="commentModalLabel{{ card.id }}" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="commentModalLabel{{ card.id }}">Комментарии к карточке {{ card.title }} </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <ul class="list-group">
-                                {% for comment in card.comments.all %}
-                                <li class="list-group-item">
-                                    <strong>{{ comment.user.username }}:</strong> <p> {{ comment.comment }} </p>
-                                </li>
-                                {% empty %}
-                                <li class="list-group-item">Нет комментариев для этой карточки.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {% endfor %}
         </ul>
         {% else %}
-        <p>Вы еще не участвуете в карточках.</p>
+        <p>Вы еще не оставляли комментарии.</p>
         {% endif %}
     </div>
+</div>
+<!-- Раздел с карточками -->
+<div class="container mt-4">
+    <h4>Ваши карточки:</h4>
+    {% if user_cards %}
+    <ul class="card-list-group">
+        {% for card in user_cards %}
+        <li class="list-group-item list-group-item-cards" data-toggle="modal"
+            style="background-color: {{ card.color }};"
+            data-target="#commentModal{{ card.id }}">
+            <strong>Карточка: {{ card.title }}</strong>
+            <span class="comment-count">{{ card.comments.count }}</span> <br>
+            <span class="text-muted">Доска: {{ card.board.board_name }}</span><br>
+            <span class="text-muted">Описание: {{ card.description }}</span><br>
+            <small class="text-muted">Дата начала: {{ card.start_date|date:"d M Y" }}</small><br>
+            <small class="text-muted">Дата окончания: {{ card.end_date|date:"d M Y" }}</small><br>
+        </li>
+
+        <!-- Модальное окно для комментариев -->
+        <div class="modal fade" id="commentModal{{ card.id }}" tabindex="-1" role="dialog"
+             aria-labelledby="commentModalLabel{{ card.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentModalLabel{{ card.id }}">Комментарии к карточке {{ card.title }} </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
+                            {% for comment in card.comments.all %}
+                            <li class="list-group-item">
+                                <strong>{{ comment.user.username }}:</strong>
+                                <p> {{ comment.comment }} </p>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item">Нет комментариев для этой карточки.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Вы еще не участвуете в карточках.</p>
+    {% endif %}
+</div>
 </div>
 
 <script>
@@ -299,6 +362,21 @@
             commentsSection.style.maxHeight = '0';  // Скрываем блок
         }
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        // Плавное появление полей ввода и кнопок
+        setTimeout(() => {
+            document.querySelectorAll(".fade-in").forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add("show");
+                }, index * 150); // Задержка для последовательного появления
+            });
+        }, 200);
+
+        // Плавное появление аватарки
+        setTimeout(() => {
+            document.querySelector(".account-img").classList.add("show");
+        }, 500);
+    });
 </script>
 
 {% endblock content %}
