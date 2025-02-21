@@ -1,48 +1,94 @@
 {% extends "users/base.html" %}
+{% load static %}
+
 {% block title %}Profile Page{% endblock title %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+{% endblock extra_head %}
+
 {% block content %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4 text-center">
-                <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}" style="cursor: pointer; width: 150px; height: 150px;" />
-            </div>
-            <div class="col-md-6">
-                {% if user_form.errors %}
-                    <div class="alert alert-danger alert-dismissible" role="alert">
-                        <div id="form_errors">
-                            {% for key, value in user_form.errors.items %}
-                                <strong>{{ value }}</strong>
-                            {% endfor %}
-                        </div>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center">
+            <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}" style="cursor: pointer; width: 150px; height: 150px;" />
+        </div>
+        <div class="col-md-6">
+            {% if user_form.errors %}
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <div id="form_errors">
+                        {% for key, value in user_form.errors.items %}
+                            <strong>{{ value }}</strong>
+                        {% endfor %}
                     </div>
-                {% endif %}
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Имя пользователя:</label>
-                                {{ user_form.username }}
-                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Email:</label>
-                                {{ user_form.email }}
-                            </div>
-                            <div class="form-group">
-                                <a href="{% url 'password_change' %}">Смена пароля</a>
-                                <hr>
-                                <label class="small mb-1" style="font-size: 15px; color: #5e5e5e;">Смена аватарки:</label>
-                                {{ profile_form.avatar }}
-                            </div>
-                            <label class="small mb-1" style="font-size: 15px; color: #5e5e5e; overflow:auto;resize:none">О себе:</label> {{ profile_form.bio}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="small mb-1 text-muted">Имя пользователя:</label>
+                            {{ user_form.username }}
+                            <label class="small mb-1 text-muted">Email:</label>
+                            {{ user_form.email }}
                         </div>
+                        <div class="form-group">
+                            <a href="{% url 'password_change' %}">Смена пароля</a>
+                            <hr>
+                            <label class="small mb-1 text-muted">Смена аватарки:</label>
+                            {{ profile_form.avatar }}
+                        </div>
+                        <label class="small mb-1 text-muted">О себе:</label>
+                        {{ profile_form.bio }}
                     </div>
-                    <br><br>
-                    <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
-                    <button type="reset" class="btn btn-dark btn-lg">Сброс</button>
-                </form>
-            </div>
+                </div>
+                <br><br>
+                <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
+                <button type="reset" class="btn btn-dark btn-lg">Сброс</button>
+            </form>
         </div>
     </div>
+
+    <!-- Раздел с комментариями -->
+    <div class="container mt-4">
+        <h4>Ваши комментарии:</h4>
+        {% if user_comments %}
+            <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
+                {% for comment in user_comments %}
+                    <li class="list-group-item">
+                        <strong>{{ comment.card.title }}:</strong> {{ comment.comment }} <br>
+                        <small class="text-muted">{{ comment.created_at|date:"d M Y H:i" }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Вы еще не оставляли комментарии.</p>
+        {% endif %}
+    </div>
+
+    <!-- Раздел с карточками -->
+    <div class="container mt-4">
+        <h4>Ваши карточки:</h4>
+        {% if user_cards %}
+            <ul class="list-group" style="max-height: 400px; overflow-y: scroll;">
+                {% for card in user_cards %}
+                    <li class="list-group-item">
+                        <strong>Карточка: {{ card.title }}</strong> <br>
+                        <span class="text-muted">Доска: {{ card.board.board_name }}</span><br>
+                        <span class="text-muted">Описание: {{ card.description }}</span><br>
+                        <small class="text-muted">Дата начала: {{ card.start_date|date:"d M Y" }}</small><br>
+                        <small class="text-muted">Дата окончания: {{ card.end_date|date:"d M Y" }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Вы еще не участвуете в карточках.</p>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock content %}
