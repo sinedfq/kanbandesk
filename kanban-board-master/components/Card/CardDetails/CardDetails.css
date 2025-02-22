@@ -91,12 +91,16 @@
 }
 
 .cardDetails {
-  border-radius: 40%;
   color: #bdbdbd;
   display: flex;
   flex-direction: column;
-  width: 700px;
-  height: 370px;
+  width: 100%; /* Занимает всю доступную ширину */
+  max-width: 700px; /* Ограничиваем максимальную ширину */
+  height: auto; /* Высота будет зависеть от контента */
+  padding: 20px; /* Добавляем отступы */
+  background-color: white; /* Фон для контраста */
+  border-radius: 10px; /* Скругление углов */
+  box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2); /* Тень */
 }
 
 @keyframes fadeIn {
@@ -167,7 +171,11 @@
 /* CardDetails.css */
 .modal-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px; /* Добавляем отступы */
 }
 
 .card-details-wrapper {
@@ -205,15 +213,16 @@
 }
 
 .comment-form {
+  padding-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
 .comments-list {
   max-width: 260px;
-  max-height: 190px; /* Максимальная высота, после которой будет прокрутка */
+  max-height: 300px; /* Максимальная высота, после которой будет прокрутка */
   overflow-y: auto;  /* Включаем прокрутку, если контент выходит за пределы */
-  padding-right: 10px; /* Отступ для улучшения внешнего вида */
+  padding-right: 5px; /* Отступ для улучшения внешнего вида */
 }
 
 .comment-form input {
@@ -225,7 +234,6 @@
   padding: 10px;
   cursor: pointer;
 }
-
 
 .save__button{
   letter-spacing: 0.65rem;
@@ -287,6 +295,8 @@
   padding-top: 20px;
   color: #454545;
 }
+
+
 
 .cardDetails p{
   margin-left: 20px;

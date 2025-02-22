@@ -2,24 +2,61 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 100%;
-  min-height: 100vh;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.212);
+  width: 100vw;
+  height: 120vh;
+  background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20;
+  opacity: 0;
+  animation: slideDown  0.5s ease-out forwards;
+  z-index: 1000;
 }
 
 .modal__content {
-  /* overflow-y: auto; */
-  max-height: 95vh;
-  background-color: var(--modal-color);
-  border-radius: 3px;
-  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.12);
+  position: relative;
+  max-width: 90vw; /* Ограничиваем ширину */
+  max-height: 90vh; /* Ограничиваем высоту */
+  background-color: white; /* Цвет фона контента */
+  border-radius: 10px;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1100;
+  margin-bottom: 20vh;
 }
 
-.modal__content::-webkit-scrollbar {
-  width: 12px !important;
+.hidden {
+  animation: fadeOutModal 0.3s ease-out forwards;
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutModal {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
