@@ -16,9 +16,8 @@ export default function CardDetails(props) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [comments, setComments] = useState([]); // Массив для хранения комментариев
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [usernames, setUsernames] = useState({}); // Мапа для хранения usernames по user_id
 
   // Загружаем авторизацию и проверяем статус
   useEffect(() => {
@@ -33,21 +32,20 @@ export default function CardDetails(props) {
 
   // Загружаем комментарии для текущей карточки по её ID
   useEffect(() => {
-    setComments([]); // Очищаем комментарии перед загрузкой новых
+    setComments([]);
     if (card.id) {
       fetch(`/api/comments/?card=${card.id}`)
         .then(response => response.json())
         .then(data => {
-          setComments(data); // Обновляем состояние комментариев
-          // Получаем имена пользователей для комментариев
+          setComments(data);
         })
         .catch(error => console.error("Error fetching comments:", error));
     }
   }, [card.id]);
 
   const handleClose = () => {
-    setComments([]); // Очищаем комментарии
-    onClose(); // Вызываем переданную функцию закрытия
+    setComments([]);
+    onClose();
   };
 
   const handleDelete = () => {
@@ -84,8 +82,8 @@ export default function CardDetails(props) {
     })
       .then(response => response.json())
       .then(data => {
-        setComments(prevComments => [...prevComments, data]); // Добавляем новый комментарий в конец списка
-        setNewComment("");  // Очищаем поле ввода
+        setComments(prevComments => [...prevComments, data]);
+        setNewComment("");
       })
       .catch(error => console.error("Error posting comment:", error));
   };
@@ -99,7 +97,7 @@ export default function CardDetails(props) {
   return (
     <>
       {isAuthorized && showCardDetailsModal && (
-        <Modal onClose={handleClose} isOpen={showCardDetailsModal}>
+        <Modal onClose={handleClose} zIndex={1000}>
           <div className="modal-content">
             <div className="card-details-wrapper">
               <div className="cardDetails">
@@ -113,7 +111,6 @@ export default function CardDetails(props) {
                 <button className="delete__button" onClick={handleDelete}>Удалить</button>
               </div>
 
-              {/* Блок с комментариями справа */}
               <div className="comments-section">
                 <h3>Комментарии</h3>
                 <div className="comments-list">
@@ -122,11 +119,11 @@ export default function CardDetails(props) {
                       <div key={comment.id} className="comment">
                         <strong>{comment.user || "Загрузка..."}:</strong> {comment.comment}
                         <br />
-                        <small>{formatDate(comment.created_at)}</small> {/* Отображение даты */}
+                        <small>{formatDate(comment.created_at)}</small>
                       </div>
                     ))
                   ) : (
-                    <p>Нет комментариев</p> // Отображаем сообщение, если нет комментариев
+                    <p>Нет комментариев</p>
                   )}
                 </div>
                 <form className="comment-form" onSubmit={handleCommentSubmit}>
@@ -140,27 +137,28 @@ export default function CardDetails(props) {
                 </form>
               </div>
             </div>
-
-            {showEditModal && (
-              <Modal onClose={() => setShowEditModal(false)} isOpen={showEditModal}>
-                <CardEdit 
-                  card={card} 
-                  onClose={() => setShowEditModal(false)} 
-                  updateCard={updateCard}
-                  bid={bid}
-                />
-              </Modal>
-            )}
           </div>
         </Modal>
       )}
 
+      {/* Второе модальное окно (CardEdit) */}
+      {showEditModal && (
+        <Modal onClose={() => setShowEditModal(false)} zIndex={1100} closeOnClick={false}>
+          <CardEdit 
+            card={card} 
+            onClose={() => setShowEditModal(false)} 
+            updateCard={updateCard}
+            bid={bid}
+          />
+        </Modal>
+      )}
+
       {showAuthModal && (
-        <Modal onClose={handleAuthModalClose}>
+        <Modal onClose={() => setShowAuthModal(false)} zIndex={1200}>
           <div className="auth-modal">
             <h2>Пожалуйста, авторизуйтесь</h2>
             <p>Вы должны быть авторизованы, чтобы просматривать карточки.</p>
-            <button onClick={handleAuthModalClose}>Закрыть</button>
+            <button onClick={() => setShowAuthModal(false)}>Закрыть</button>
           </div>
         </Modal>
       )}
