@@ -202,7 +202,11 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 @login_required
 def check_auth(request):
-    return JsonResponse({'isAuthenticated': True})
+    profile = request.user.profile
+    return JsonResponse({
+        'isAuthenticated': True,
+        'role': profile.role  # Возвращаем роль пользователя
+    })
 
 def get_username(request, user_id):
     user = get_object_or_404(User, id=user_id)
