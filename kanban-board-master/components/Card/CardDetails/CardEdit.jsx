@@ -20,6 +20,15 @@ export default function CardEdit(props) {
   const [color, setColor] = useState(card.color || "#ffffff");
   const [users, setUsers] = useState([]);
 
+  // Определяем набор цветов
+  const colors = [
+    { name: "Синий", value: "#0000FF" },
+    { name: "Красный", value: "#FF0000" },
+    { name: "Жёлтый", value: "#FFFF00" },
+    { name: "Зелёный", value: "#00FF00" },
+    { name: "Фиолетовый", value: "#800080" },
+  ];
+
   useEffect(() => {
     fetch("/api/users/")
       .then(response => response.json())
@@ -92,12 +101,19 @@ export default function CardEdit(props) {
           />
         </div>
         <div className="color-picker">
-          <label>Выберите цвет:</label>
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
+          <label>Цвет:</label>
+          <div className="color-options">
+            {colors.map((colorOption) => (
+              <button
+                key={colorOption.value}
+                className="color-button"
+                style={{ backgroundColor: colorOption.value }}
+                onClick={() => setColor(colorOption.value)}
+              >
+                {color === colorOption.value && "✔"} {/* Показываем галочку, если цвет выбран */}
+              </button>
+            ))}
+          </div>
           <button className="save__button" onClick={handleSave}>Сохранить</button>
         </div>
       </div>

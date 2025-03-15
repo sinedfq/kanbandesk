@@ -91,9 +91,9 @@ export default function Board(props) {
       </Droppable>
       <div className="board__footer">
         <Editable
-          name={"Add Card"}
-          btnName={"Add Card"}
-          placeholder={"Enter Card Title"}
+          name={"Добавить карточку"}
+          btnName={"Добавить"}
+          placeholder={"Введите название карточки"}
           onSubmit={(value) => props.addCard(value, props.id)}
         />
       </div>

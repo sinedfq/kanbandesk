@@ -13,7 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
@@ -97,7 +98,7 @@ def profile(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-
+        
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -106,15 +107,18 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
-        user_cards = Card.objects.filter(participants=request.user)
 
-    user_comments = Comment.objects.filter(user=request.user)  # Получаем комментарии пользователя
+    # Получаем карточки, в которых участвует пользователь
+    user_cards = Card.objects.filter(participants=request.user)
+
+    # Получаем комментарии пользователя
+    user_comments = Comment.objects.filter(user=request.user)
 
     return render(request, 'users/profile.html', {
         'user_form': user_form,
         'profile_form': profile_form,
-        'user_comments': user_comments,
         'user_cards': user_cards,
+        'user_comments': user_comments,
     })
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -126,11 +130,17 @@ class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
-from rest_framework.exceptions import ValidationError
+
+
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
+    def get_queryset(self):
+        # Удаляем истекшие карточки перед возвращением данных
+        Card.objects.filter(end_date__lt=timezone.now()).delete()
+        return Card.objects.all()
+    
     @method_decorator(csrf_exempt)  # Если необходимо отключить проверку CSRF токена
     def update(self, request, *args, **kwargs):
         # Выводим данные, которые пришли в запросе
