@@ -15,19 +15,14 @@ class Profile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.jpg')
     bio = models.TextField()
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
 
-    def __str__(self):
-        return self.user.username
-
     # Изменение размера изображений
     def save(self, *args, **kwargs):
-        super().save()
-
+        super().save(*args, **kwargs)
         img = Image.open(self.avatar.path)
-
         if img.height > 100 or img.width > 100:
             new_img = (100, 100)
             img.thumbnail(new_img)
@@ -35,6 +30,10 @@ class Profile(models.Model):
 
     def get_user_comments(self):
         return Comment.objects.filter(user=self.user)
+    
+    def __str__(self):
+        return f'{self.user.username} Profile'
+
 
 # Модель доски (board)
 class Board(models.Model):

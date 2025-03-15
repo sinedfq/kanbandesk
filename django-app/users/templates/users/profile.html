@@ -202,15 +202,15 @@
     }
 
     .role-admin {
-        color: #dc3545; /* Красный для админа */
-        font-weight: bold;
-    }
-    
+    color: #dc3545; /* Красный для админа */
+    font-weight: bold;
+}
+
     .role-user {
         color: #007bff; /* Синий для пользователя */
         font-weight: bold;
     }
-    
+
     .role-moderator {
         color: #28a745; /* Зеленый для модератора */
         font-weight: bold;
@@ -251,7 +251,7 @@
                         <div class="form-group fade-in">
                             <a href="{% url 'password_change' %}">Смена пароля</a>
                             <hr>
-                            <label class="small mb-1 text-muted">Смена аватарки:</label>
+                            <label class="small mb-1">Change Avatar:</label>
                             {{ profile_form.avatar }}
                         </div>
                         <p class="small mb-1 text-muted fade-in">
