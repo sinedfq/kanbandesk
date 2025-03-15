@@ -13,6 +13,7 @@ export default function CardDetails(props) {
   } = props;
 
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userRole, setUserRole] = useState(null);  // Состояние для роли пользователя
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -25,6 +26,7 @@ export default function CardDetails(props) {
       .then(response => response.json())
       .then(data => {
         setIsAuthorized(data.isAuthenticated);
+        setUserRole(data.role);  // Сохраняем роль пользователя
         setShowCardDetailsModal(data.isAuthenticated);
       })
       .catch(error => console.error("Error fetching auth status:", error));
@@ -107,8 +109,19 @@ export default function CardDetails(props) {
                 <p><strong>Участники:</strong> {card.participants.join(", ")}</p>
                 <p><strong>Дата начала:</strong> {card.start_date}</p>
                 <p><strong>Дата окончания:</strong> {card.end_date}</p>
-                <button className="navigate__button" onClick={() => setShowEditModal(true)}>Редактировать</button>
-                <button className="delete__button" onClick={handleDelete}>Удалить</button>
+
+                
+                {/* Показываем кнопку редактирования только для админов */}
+                {(userRole === 'admin' || userRole === 'moderator') && (
+                  <button className="navigate__button" onClick={() => setShowEditModal(true)}>
+                    Редактировать
+                  </button>
+                )}
+
+                {/* Показываем кнопку удаления только для админов */}
+                {(userRole === 'admin' || userRole === 'moderator') && (
+                  <button className="delete__button" onClick={handleDelete}>Удалить</button>
+                )}  
               </div>
 
               <div className="comments-section">

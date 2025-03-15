@@ -11,10 +11,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    role = serializers.CharField(source='get_role_display')
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'avatar', 'bio']
+        fields = ['id', 'user', 'avatar', 'bio', 'role']
+        
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board

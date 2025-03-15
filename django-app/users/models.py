@@ -7,9 +7,17 @@ from PIL import Image
 
 # Модель профиля пользователя
 class Profile(models.Model):
+
+    ROLE_CHOICES = [
+        ('admin', 'Админ'),
+        ('user', 'Пользователь'),
+        ('moderator', 'Модератор'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField()
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
 
     def __str__(self):
         return self.user.username
