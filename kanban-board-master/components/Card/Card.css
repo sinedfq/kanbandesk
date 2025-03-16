@@ -30,6 +30,12 @@
   align-self: flex-start;
 }
 
+.custom__card.expired {
+  background-color: #80808099; /* Серый цвет с прозрачностью */
+  text-decoration: line-through; /* Перечеркнутый текст */
+  opacity: 0.7; /* Немного прозрачности */
+}
+
 .card__text {
   display: flex;
   align-items: center;

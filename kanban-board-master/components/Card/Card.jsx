@@ -8,8 +8,11 @@ const Card = (props) => {
   const [dropdown, setDropdown] = useState(false);
   const [modalShow, setModalShow] = useState(false);
 
+  // Проверяем, прошла ли дата окончания
+  const isExpired = props.card.end_date && new Date(props.card.end_date) < new Date();
+
   // Применяем цвет, если он задан, иначе устанавливаем дефолтный цвет
-  const cardColor = props.card.color ? props.card.color : "#ffffff"; // fallback
+  const cardColor = isExpired ? "#808080" : (props.card.color ? props.card.color : "#ffffff");
 
   return (
     <Draggable
@@ -32,7 +35,7 @@ const Card = (props) => {
               />
             )}
             <div
-              className={`custom__card ${isDragging ? 'dragging' : ''}`}
+              className={`custom__card ${isDragging ? 'dragging' : ''} ${isExpired ? 'expired' : ''}`}
               onClick={() => {
                 setModalShow(true);
               }}

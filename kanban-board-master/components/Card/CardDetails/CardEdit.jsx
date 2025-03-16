@@ -52,6 +52,14 @@ export default function CardEdit(props) {
     onClose();
   };
 
+  const handleParticipantChange = (username) => {
+    if (participants.includes(username)) {
+      setParticipants(participants.filter(participant => participant !== username));
+    } else {
+      setParticipants([...participants, username]);
+    }
+  };
+
   return (
     <Modal onClose={onClose}>
       <div className="cardDetails">
@@ -67,21 +75,25 @@ export default function CardEdit(props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
+
         <div className="participants-dropdown">
-          <select
-            multiple
-            value={participants}
-            onChange={(e) =>
-              setParticipants([...e.target.selectedOptions].map(option => option.value))
-            }
-          >
+          <label>Участники:</label>
+          <div className="participants-list">
             {users.map(user => (
-              <option key={user.id} value={user.user.username}>
-                {user.user.username}
-              </option>
+              <div key={user.id} className="participant-item">
+                <input
+                  type="checkbox"
+                  id={`participant-${user.id}`}
+                  value={user.user.username}
+                  checked={participants.includes(user.user.username)}
+                  onChange={() => handleParticipantChange(user.user.username)}
+                />
+                <label htmlFor={`participant-${user.id}`}>{user.user.username}</label>
+              </div>
             ))}
-          </select>
+          </div>
         </div>
+
         <div className="date-picker-container">
           <DatePicker
             selected={startDate}
@@ -100,6 +112,7 @@ export default function CardEdit(props) {
             endDate={endDate}
           />
         </div>
+
         <div className="color-picker">
           <label>Цвет:</label>
           <div className="color-options">
@@ -110,12 +123,13 @@ export default function CardEdit(props) {
                 style={{ backgroundColor: colorOption.value }}
                 onClick={() => setColor(colorOption.value)}
               >
-                {color === colorOption.value && "✔"} {/* Показываем галочку, если цвет выбран */}
+                {color === colorOption.value && "✔"}
               </button>
             ))}
           </div>
           <button className="save__button" onClick={handleSave}>Сохранить</button>
         </div>
+
       </div>
     </Modal>
   );
