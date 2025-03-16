@@ -14,6 +14,7 @@ export default function CardDetails(props) {
 
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [userRole, setUserRole] = useState(null);  // Состояние для роли пользователя
+  const [username, setUsername] = useState(null);  // Состояние для имени пользователя
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -27,6 +28,7 @@ export default function CardDetails(props) {
       .then(data => {
         setIsAuthorized(data.isAuthenticated);
         setUserRole(data.role);  // Сохраняем роль пользователя
+        setUsername(data.username);  // Сохраняем имя пользователя
         setShowCardDetailsModal(data.isAuthenticated);
       })
       .catch(error => console.error("Error fetching auth status:", error));
@@ -96,6 +98,8 @@ export default function CardDetails(props) {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   };
 
+  // Проверка, является ли пользователь участником карточки
+  const isParticipant = card.participants.includes(username);
   return (
     <>
       {isAuthorized && showCardDetailsModal && (
@@ -110,15 +114,14 @@ export default function CardDetails(props) {
                 <p><strong>Дата начала:</strong> {card.start_date}</p>
                 <p><strong>Дата окончания:</strong> {card.end_date}</p>
 
-                
-                {/* Показываем кнопку редактирования только для админов */}
-                {(userRole === 'admin' || userRole === 'moderator') && (
+                {/* Показываем кнопку редактирования для админов, модераторов и участников карточки */}
+                {(userRole === 'admin' || userRole === 'moderator' || isParticipant) && (
                   <button className="navigate__button" onClick={() => setShowEditModal(true)}>
                     Редактировать
                   </button>
                 )}
 
-                {/* Показываем кнопку удаления только для админов */}
+                {/* Показываем кнопку удаления только для админов и модераторов */}
                 {(userRole === 'admin' || userRole === 'moderator') && (
                   <button className="delete__button" onClick={handleDelete}>Удалить</button>
                 )}  

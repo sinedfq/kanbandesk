@@ -135,11 +135,6 @@ class BoardViewSet(viewsets.ModelViewSet):
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
-
-    def get_queryset(self):
-        # Удаляем истекшие карточки перед возвращением данных
-        Card.objects.filter(end_date__lt=timezone.now()).delete()
-        return Card.objects.all()
     
     @method_decorator(csrf_exempt)  # Если необходимо отключить проверку CSRF токена
     def update(self, request, *args, **kwargs):
