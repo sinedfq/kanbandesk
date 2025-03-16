@@ -164,3 +164,268 @@ if settings.DEBUG:
 Не мало важным объектом нашего проекта является ursl. В данном коде реализованы /api/ запросы к нашему проекту, из которых мы получаем всю необходимую информацию из БД
 
 ----
+
+Также у нас имеются JSX файлы и компоненты<br><br>
+CardDetails.jsx 
+```javascript
+
+export default function CardDetails(props) {
+  const {
+    card = { id: null, title: "", description: "", participants: [], start_date: null, end_date: null },
+    bid,
+    updateCard,
+    removeCard,
+    onClose,
+  } = props;
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userRole, setUserRole] = useState(null);  // Состояние для роли пользователя
+  const [username, setUsername] = useState(null);  // Состояние для имени пользователя
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showCardDetailsModal, setShowCardDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+
+  // Загружаем авторизацию и проверяем статус
+  useEffect(() => {
+    fetch("/api/auth/check")
+      .then(response => response.json())
+      .then(data => {
+        setIsAuthorized(data.isAuthenticated);
+        setUserRole(data.role);  // Сохраняем роль пользователя
+        setUsername(data.username);  // Сохраняем имя пользователя
+        setShowCardDetailsModal(data.isAuthenticated);
+      })
+      .catch(error => console.error("Error fetching auth status:", error));
+  }, []);
+
+  // Загружаем комментарии для текущей карточки по её ID
+  useEffect(() => {
+    setComments([]);
+    if (card.id) {
+      fetch(`/api/comments/?card=${card.id}`)
+        .then(response => response.json())
+        .then(data => {
+          setComments(data);
+        })
+        .catch(error => console.error("Error fetching comments:", error));
+    }
+  }, [card.id]);
+
+  const handleClose = () => {
+    setComments([]);
+    onClose();
+  };
+
+  const handleDelete = () => {
+    if (typeof removeCard === "function") {
+      removeCard(bid, card.id);
+    } else {
+      console.error("removeCard is not a function");
+    }
+
+    setShowCardDetailsModal(false);
+    setShowAuthModal(false);
+    handleClose();
+  };
+
+  // Отправка нового комментария
+  const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    const token = localStorage.getItem('authToken');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch("/api/comments/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({
+        card: card.id,
+        comment: newComment,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setComments(prevComments => [...prevComments, data]);
+        setNewComment("");
+      })
+      .catch(error => console.error("Error posting comment:", error));
+  };
+
+  // Проверка, является ли пользователь участником карточки
+  const isParticipant = card.participants.includes(username);
+  return (
+    <>
+      {isAuthorized && showCardDetailsModal && (
+        <Modal onClose={handleClose} zIndex={1000}>
+          <div className="modal-content">
+            <div className="card-details-wrapper">
+              <div className="cardDetails">
+                <h2 className="card__view">Просмотр карточки</h2>
+                <p><strong>Заголовок:</strong> {card.title}</p>
+                <p><strong>Описание:</strong> {card.description}</p>
+                <p><strong>Участники:</strong> {card.participants.join(", ")}</p>
+                <p><strong>Дата начала:</strong> {card.start_date}</p>
+                <p><strong>Дата окончания:</strong> {card.end_date}</p>
+
+                {/* Показываем кнопку редактирования для админов, модераторов и участников карточки */}
+                {(userRole === 'admin' || userRole === 'moderator' || isParticipant) && (
+                  <button className="navigate__button" onClick={() => setShowEditModal(true)}>
+                    Редактировать
+                  </button>
+                )}
+
+                {/* Показываем кнопку удаления только для админов и модераторов */}
+                {(userRole === 'admin' || userRole === 'moderator') && (
+                  <button className="delete__button" onClick={handleDelete}>Удалить</button>
+                )}  
+              </div>
+
+              <div className="comments-section">
+                <h3>Комментарии</h3>
+                <div className="comments-list">
+                  {comments.length > 0 ? (
+                    comments.map(comment => (
+                      <div key={comment.id} className="comment">
+                        <strong>{comment.user || "Загрузка..."}:</strong> {comment.comment}
+                        <br />
+                        <small>{formatDate(comment.created_at)}</small>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Нет комментариев</p>
+                  )}
+                </div>
+                <form className="comment-form" onSubmit={handleCommentSubmit}>
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Добавить комментарий..."
+                  />
+                  <button type="submit">Отправить</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Второе модальное окно (CardEdit) */}
+      {showEditModal && (
+        <Modal onClose={() => setShowEditModal(false)} zIndex={1100} closeOnClick={false}>
+          <CardEdit 
+            card={card} 
+            onClose={() => setShowEditModal(false)} 
+            updateCard={updateCard}
+            bid={bid}
+          />
+        </Modal>
+      )}
+
+      {showAuthModal && (
+        <Modal onClose={() => setShowAuthModal(false)} zIndex={1200}>
+          <div className="auth-modal">
+            <h2>Пожалуйста, авторизуйтесь</h2>
+            <p>Вы должны быть авторизованы, чтобы просматривать карточки.</p>
+            <button onClick={() => setShowAuthModal(false)}>Закрыть</button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}
+```
+Данный участок кода реализует компонент CardDetail, он служит за обратоку информации содержащейся в карточке. <br><br>
+Комнонет вызвается только тогда, когда пользователь кликает на компонент Card, который находиться на доске. <br>
+Все компоненты реализованы +- одинакого:
+1. Сначала идут функции обработчики.
+2. Далее идёт ```return``` который отображает всю необхоидую информацию.
+
+-----
+
+App.jsx 
+
+В файле App.jsx реализованы обработчики всех событий канбан-доски (добавление новой доски/карточки, удаление или редактирование карточки и т.д.) <br>
+
+```javascript
+useEffect(() => {
+  axios.all([
+    axios.get('http://localhost:8000/api/boards/'),
+    axios.get('http://localhost:8000/api/cards/')
+  ])
+  .then(axios.spread((boardsResponse, cardsResponse) => {
+    const boardsData = boardsResponse.data;
+    const cardsData = cardsResponse.data;
+
+    const formattedData = boardsData.map(board => ({
+      id: board.id,
+      boardName: board.board_name,
+      cards: cardsData
+        .filter(card => card.board === board.id)
+        .map(card => ({
+          id: card.id,
+          title: card.title,
+          description: card.description,
+          start_date: card.start_date || null,
+          end_date: card.end_date || null,
+          participants: card.participants.map(participant => participant.username),
+          color: card.color || "#ffffff", // Загружаем цвет карточки
+        })),
+    }));
+
+    setData(formattedData);
+  }))
+  .catch(error => {
+    console.error('Ошибка загрузки данных!', error);
+  });
+}, []);
+```
+
+Данный же участок кода отрисосывает всю информацию при заходе пользователя на сайт.
+
+```javascript
+  const updateCard = (bid, cid, updatedCardData) => {
+    console.log(`Updating card with ID: ${cid} in board with ID: ${bid}`);
+    console.log('Updated Card Data:', updatedCardData);
+  
+    const boardIndex = data.findIndex((board) => board.id === bid);
+    if (boardIndex === -1) {
+      console.error(`Board with ID ${bid} not found.`);
+      return;
+    }
+  
+    const cardIndex = data[boardIndex].cards.findIndex((item) => item.id === cid);
+    if (cardIndex === -1) {
+      console.error(`Card with ID ${cid} not found in board ${bid}.`);
+      return;
+    }
+  
+    const updatedBoards = [...data];
+    updatedBoards[boardIndex].cards[cardIndex] = {
+      ...updatedBoards[boardIndex].cards[cardIndex],
+      ...updatedCardData,
+    };
+    setData(updatedBoards);
+  
+    axios.put(`http://localhost:8000/api/cards/${cid}/`, updatedCardData)
+      .then(() => {
+        console.log(`Card with ID ${cid} successfully updated.`);
+      })
+      .catch(error => {
+        console.error(`Failed to update card with ID ${cid}.`, error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+        }
+      });
+  };
+```
+
+Функция обновления инфомарции в карточке и запись в нашу БД<br>
+Остальные функцию работают по той же схеме
