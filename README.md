@@ -60,6 +60,12 @@ python manage.py runserver
 ![image](https://github.com/user-attachments/assets/d4ee3e44-02c2-4048-b119-7c3790036170)
 ![image](https://github.com/user-attachments/assets/474287b4-3210-42ba-a527-053d29f19fe7)
 
+Уведомления, что пользователь не авторизован:
+![image](https://github.com/user-attachments/assets/d2c577f6-96b6-4898-bc29-bbfd78fba30e)
+
+![image](https://github.com/user-attachments/assets/91bd4f36-8cf6-4d67-8eb6-c48752b19dc4)
+
+
 -----
 
 <h3>Техническое описание:</h3>
