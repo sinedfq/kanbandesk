@@ -28,7 +28,7 @@ export default function CardDetails(props) {
       .then(data => {
         setIsAuthorized(data.isAuthenticated);
         setUserRole(data.role);  // Сохраняем роль пользователя
-        setUsername(data.username);  // Сохраняем имя пользователя
+        setUsername(data.name);  // Сохраняем имя пользователя
         setShowCardDetailsModal(data.isAuthenticated);
       })
       .catch(error => console.error("Error fetching auth status:", error));
@@ -124,7 +124,7 @@ export default function CardDetails(props) {
                 {/* Показываем кнопку удаления только для админов и модераторов */}
                 {(userRole === 'admin' || userRole === 'moderator') && (
                   <button className="delete__button" onClick={handleDelete}>Удалить</button>
-                )}  
+                )}
               </div>
 
               <div className="comments-section">
@@ -160,9 +160,9 @@ export default function CardDetails(props) {
       {/* Второе модальное окно (CardEdit) */}
       {showEditModal && (
         <Modal onClose={() => setShowEditModal(false)} zIndex={1100} closeOnClick={false}>
-          <CardEdit 
-            card={card} 
-            onClose={() => setShowEditModal(false)} 
+          <CardEdit
+            card={card}
+            onClose={() => setShowEditModal(false)}
             updateCard={updateCard}
             bid={bid}
           />
@@ -175,6 +175,41 @@ export default function CardDetails(props) {
             <h2>Пожалуйста, авторизуйтесь</h2>
             <p>Вы должны быть авторизованы, чтобы просматривать карточки.</p>
             <button onClick={() => setShowAuthModal(false)}>Закрыть</button>
+          </div>
+        </Modal>
+      )}
+
+      {showAuthModal && (
+        <Modal onClose={() => setShowAuthModal(false)} zIndex={1200}>
+          <div className="auth-notification">
+            <div className="auth-notification__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+              </svg>
+            </div>
+            <h2 className="auth-notification__title">Требуется авторизация</h2>
+            <p className="auth-notification__message">
+              Для просмотра этой карточки вам необходимо войти в систему.
+            </p>
+            <div className="auth-notification__actions">
+              <button
+                className="auth-notification__button auth-notification__button--primary"
+                onClick={() => {
+                  window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+                }}
+              >
+                Войти
+              </button>
+              <button
+                className="auth-notification__button"
+                onClick={() => {
+                  setShowAuthModal(false);
+                  onClose();
+                }}
+              >
+                Закрыть
+              </button>
+            </div>
           </div>
         </Modal>
       )}
