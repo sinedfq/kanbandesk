@@ -210,7 +210,8 @@ def check_auth(request):
     profile = request.user.profile
     return JsonResponse({
         'isAuthenticated': True,
-        'role': profile.role  # Возвращаем роль пользователя
+        'role': profile.role,  # Возвращаем роль пользователя
+        'name': request.user.username  # Возвращаем имя пользователя
     })
 
 def get_username(request, user_id):

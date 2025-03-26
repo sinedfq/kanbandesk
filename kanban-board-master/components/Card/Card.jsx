@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Calendar, Edit3 } from "react-feather";
+import { toast } from "react-toastify";
 import CardDetails from "./CardDetails/CardDetails.jsx";
 import "./Card.css";
 
@@ -13,6 +14,42 @@ const Card = (props) => {
 
   // Применяем цвет, если он задан, иначе устанавливаем дефолтный цвет
   const cardColor = isExpired ? "#808080" : (props.card.color ? props.card.color : "#ffffff");
+
+  const handleCardClick = () => {
+    if (!props.isAuthenticated) {
+      toast.error(
+        <div>
+          <h4>Доступ ограничен</h4>
+          <p>Для просмотра и редактирования карточки необходимо войти в систему</p>
+        </div>,
+        {
+          autoClose: 5000,
+          closeButton: true,
+        }
+      );
+      return;
+    }
+    setModalShow(true);
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    
+    if (!props.isAuthenticated) {
+      toast.error(
+        <div>
+          <h4>Редактирование недоступно</h4>
+          <p>Для изменения карточки необходимо авторизоваться</p>
+        </div>,
+        {
+          autoClose: 5000,
+          closeButton: true,
+        }
+      );
+      return;
+    }
+    setDropdown(true);
+  };
 
   return (
     <Draggable
@@ -32,19 +69,19 @@ const Card = (props) => {
                 onClose={() => setModalShow(false)}
                 card={props.card}
                 bid={props.bid}
+                currentUser={props.currentUser}
               />
             )}
             <div
               className={`custom__card ${isDragging ? 'dragging' : ''} ${isExpired ? 'expired' : ''}`}
-              onClick={() => {
-                setModalShow(true);
-              }}
+              onClick={handleCardClick}
               {...provided.draggableProps}           
               {...provided.dragHandleProps}          
               ref={provided.innerRef}               
               style={{
-                backgroundColor: `${cardColor}99`,   // Фон по умолчанию
-                ...provided.draggableProps.style,    // Стили от react-beautiful-dnd
+                backgroundColor: `${cardColor}99`,
+                ...provided.draggableProps.style,
+                cursor: 'pointer',
               }}
             >
               <div className="card__text">
@@ -52,10 +89,7 @@ const Card = (props) => {
                 <Edit3
                   color="#000000"
                   className="car__more"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDropdown(true);
-                  }}
+                  onClick={handleEditClick}
                 />
               </div>
               <div className="card__footer">

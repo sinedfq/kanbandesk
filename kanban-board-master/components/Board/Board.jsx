@@ -81,6 +81,7 @@ export default function Board(props) {
                 card={card} // Передаем данные карточки как props.card
                 updateCard={props.updateCard}
                 updateCardDate={props.updateCardDate}
+                isAuthenticated={props.isAuthenticated}
                 updateCardEndDate={props.updateCardEndDate}
                 removeCard={props.removeCard}
               />
